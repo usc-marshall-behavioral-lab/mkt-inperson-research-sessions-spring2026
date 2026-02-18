@@ -121,6 +121,157 @@ body {
 }
 .btn-emergency:active { transform: scale(0.96); }
 
+.btn-checklist {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: white;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn-checklist:active { transform: scale(0.96); }
+
+/* ── CHECKLISTS PANEL ── */
+.cl-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--bg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.cl-panel.open { display: block; }
+.cl-panel-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--cardinal);
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.cl-panel-bar h2 { font-size: 16px; font-weight: 700; }
+.cl-panel-close {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.cl-panel-close:active { background: rgba(255,255,255,0.25); }
+.cl-panel-content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.cl-intro {
+  text-align: center;
+  padding: 16px 0 12px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+.cl-intro p { font-size: 13px; color: var(--text-muted); }
+.cl-progress {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cl-progress-track {
+  flex: 1;
+  height: 8px;
+  background: var(--surface-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.cl-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cardinal), #cc3333);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+.cl-progress-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+}
+.cl-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.cl-section-head {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+.cl-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: white;
+  white-space: nowrap;
+}
+.cl-badge.before { background: #E8590C; }
+.cl-badge.session { background: #7048E8; }
+.cl-badge.after { background: #0C8599; }
+.cl-section-head h3 { font-size: 15px; font-weight: 700; }
+.cl-section-head .cl-when {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.cl-section-body { padding: 4px 16px 16px; }
+.cl-group-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 0 6px;
+}
+.cl-group-label.hard { color: var(--hard-text); }
+.cl-group-label.start { color: #1A4A7A; }
+.cl-reset {
+  display: block;
+  margin: 20px auto 24px;
+  padding: 10px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.cl-reset:active { background: var(--surface-alt); }
+
 /* ── SEARCH ── */
 .search-bar {
   position: sticky;
@@ -1125,7 +1276,10 @@ body {
   <div class="top-bar-inner">
     <h1>In-Person Research Session Management <small>Marshall Behavioral Research Lab · BUAD 307 · Spring 2026</small></h1>
     <div class="session-clock" id="sessionClock"></div>
-    <button class="btn-emergency">⚠ Help</button>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn-checklist" id="btnChecklists">✅ Checklists</button>
+      <button class="btn-emergency">⚠ Help</button>
+    </div>
   </div>
 </header>
 
@@ -1460,7 +1614,7 @@ body {
     <!-- Computer Setup -->
     <div class="card" data-search>
       <div class="card-head">
-        <span class="ch-icon">🖥</span> Lab & Computer Setup (30 Min Early)
+        <span class="ch-icon">🖥</span> Checklist: Lab & Computer Setup (30 Min Early)
         <svg class="ch-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </div>
       <div class="card-body">
@@ -1659,7 +1813,7 @@ body {
     <!-- Opening Script -->
     <div class="card" id="script" data-search>
       <div class="card-head">
-        <span class="ch-icon">📝</span> Session Opening Script
+        <span class="ch-icon">📝</span> Session Opening Script + Checklist
         <svg class="ch-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </div>
       <div class="card-body">
@@ -1883,7 +2037,7 @@ body {
     <!-- End Script -->
     <div class="card" data-search>
       <div class="card-head">
-        <span class="ch-icon">🏁</span> End-of-Session Procedure
+        <span class="ch-icon">🏁</span> Checklist: End-of-Session Procedure
         <svg class="ch-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </div>
       <div class="card-body">
@@ -2367,6 +2521,86 @@ body {
   </div>
 </div>
 
+<!-- ═══ CHECKLISTS PANEL ═══ -->
+<div class="cl-panel" id="clPanel">
+  <div class="cl-panel-bar">
+    <h2>✅ Session Checklists</h2>
+    <button class="cl-panel-close" id="clClose">✕ Close</button>
+  </div>
+  <div class="cl-panel-content">
+    <div class="cl-intro">
+      <p>Tap items to check them off · Resets on page reload</p>
+    </div>
+    <div class="cl-progress">
+      <div class="cl-progress-track"><div class="cl-progress-fill" id="clProgressFill"></div></div>
+      <div class="cl-progress-text" id="clProgressText">0 / 21</div>
+    </div>
+
+    <div class="cl-section">
+      <div class="cl-section-head">
+        <span class="cl-badge before">§2</span>
+        <h3>🖥 Lab & Computer Setup</h3>
+        <span class="cl-when">30 min early</span>
+      </div>
+      <div class="cl-section-body">
+        <ul class="checklist" id="cl2-setup">
+          <li>Power on all 16 computers individually</li>
+          <li>Log in via Cross Tech School View at Proctor/RA Desk</li>
+          <li>Log into SimpleTexting — keep Inbox tab open</li>
+          <li>Open study folders: VPD folder → Temp → [current week's folder]</li>
+          <li>Print sign-up sheet from Google Spreadsheet — verify it matches</li>
+          <li>Write SONA IDs on Post-its — 2 per person (one for phone, one for station)</li>
+          <li>Stage materials for 16 stations — hide food/supplies under tables</li>
+        </ul>
+        <div class="cl-group-label hard">⬛ Verify Before Session</div>
+        <ul class="checklist" id="cl2-verify">
+          <li>VOIP phone working</li>
+          <li>Video doorbell active</li>
+          <li>Both emergency exits located</li>
+          <li>Card access works</li>
+          <li>SimpleTexting Inbox open</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cl-section">
+      <div class="cl-section-head">
+        <span class="cl-badge session">§4</span>
+        <h3>📝 Session Start</h3>
+        <span class="cl-when">after script</span>
+      </div>
+      <div class="cl-section-body">
+        <div class="cl-group-label start">✔ Before first study begins</div>
+        <ul class="checklist" id="cl4-start">
+          <li>All participants have their 6-digit ID on Post-it</li>
+          <li>Headphones distributed (if applicable)</li>
+          <li>Participants ready to begin</li>
+          <li>Both RAs positioned and ready</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cl-section">
+      <div class="cl-section-head">
+        <span class="cl-badge after">§5</span>
+        <h3>🏁 End-of-Session</h3>
+        <span class="cl-when">5 min before hour</span>
+      </div>
+      <div class="cl-section-body">
+        <ul class="checklist" id="cl5-end">
+          <li>Return phones from wall pockets</li>
+          <li>Dismiss participants</li>
+          <li>Close all study content, tabs, and surveys on every station</li>
+          <li>Collect Post-its from stations and phones</li>
+          <li>Log out of SimpleTexting</li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="cl-reset" id="clReset">↻ Reset All Checklists</button>
+  </div>
+</div>
+
 <script>
 (function() {
 
@@ -2668,7 +2902,7 @@ body {
   // ── INTERACTIVE CHECKLISTS ──
   document.addEventListener('click', function(e) {
     var li = e.target.closest('.checklist li');
-    if (li) {
+    if (li && !li.closest('.cl-panel')) {
       li.classList.toggle('checked');
       return;
     }
@@ -2761,6 +2995,64 @@ body {
       }
     });
   })();
+
+  // ── CHECKLISTS PANEL ──
+  var clPanel = document.getElementById('clPanel');
+  var btnChecklists = document.getElementById('btnChecklists');
+  var clClose = document.getElementById('clClose');
+  var clProgressFill = document.getElementById('clProgressFill');
+  var clProgressText = document.getElementById('clProgressText');
+  var clReset = document.getElementById('clReset');
+
+  function updateClProgress() {
+    var total = clPanel.querySelectorAll('.checklist li').length;
+    var checked = clPanel.querySelectorAll('.checklist li.checked').length;
+    var pct = Math.round((checked / total) * 100);
+    clProgressFill.style.width = pct + '%';
+    if (checked === total) {
+      clProgressText.textContent = '✓ All done!';
+      clProgressFill.style.background = 'linear-gradient(90deg, #1B6B3A, #2F9E44)';
+    } else {
+      clProgressText.textContent = checked + ' / ' + total;
+      clProgressFill.style.background = '';
+    }
+  }
+
+  btnChecklists.addEventListener('click', function() {
+    clPanel.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  clClose.addEventListener('click', function() {
+    clPanel.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+
+  clPanel.addEventListener('click', function(e) {
+    var li = e.target.closest('.checklist li');
+    if (li && clPanel.contains(li)) {
+      li.classList.toggle('checked');
+      updateClProgress();
+    }
+  });
+
+  clReset.addEventListener('click', function() {
+    var items = clPanel.querySelectorAll('.checklist li.checked');
+    for (var i = 0; i < items.length; i++) {
+      items[i].classList.remove('checked');
+    }
+    updateClProgress();
+  });
+
+  // Escape closes panel
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && clPanel.classList.contains('open')) {
+      clPanel.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
+  updateClProgress();
 
   // ── DEEP LINK SUPPORT ──
   function handleHash() {

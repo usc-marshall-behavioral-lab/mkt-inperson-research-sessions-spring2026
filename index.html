@@ -129,6 +129,12 @@ body {
   background: var(--bg);
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
+  transition: transform 0.25s, opacity 0.25s;
+}
+.search-bar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .search-bar-inner {
@@ -188,6 +194,7 @@ body {
   padding: 8px 16px 10px;
   border-bottom: 1px solid var(--border-light);
   white-space: nowrap;
+  transition: top 0.25s;
 }
 .nav-pills::-webkit-scrollbar { display: none; }
 
@@ -196,6 +203,7 @@ body {
   margin: 0 auto;
   display: flex;
   gap: 6px;
+  align-items: center;
 }
 
 .nav-pill {
@@ -220,6 +228,7 @@ body {
   border-color: var(--cardinal);
 }
 /* Match pill active colors to section tab colors */
+.nav-pill[href="#schedule"]:hover, .nav-pill[href="#schedule"].active { background: #C49A10; border-color: #C49A10; color: white; }
 .nav-pill[href="#s1"]:hover, .nav-pill[href="#s1"].active { background: #E03131; border-color: #E03131; }
 .nav-pill[href="#s2"]:hover, .nav-pill[href="#s2"].active { background: #E8590C; border-color: #E8590C; }
 .nav-pill[href="#s3"]:hover, .nav-pill[href="#s3"].active { background: #2F9E44; border-color: #2F9E44; }
@@ -227,12 +236,24 @@ body {
 .nav-pill[href="#s4"]:hover, .nav-pill[href="#s4"].active { background: #7048E8; border-color: #7048E8; }
 .nav-pill[href="#s5"]:hover, .nav-pill[href="#s5"].active { background: #0C8599; border-color: #0C8599; }
 .nav-pill[href="#s6"]:hover, .nav-pill[href="#s6"].active { background: #C2255C; border-color: #C2255C; }
-.nav-pill[href="#sA"]:hover, .nav-pill[href="#sA"].active { background: #C2255C; border-color: #C2255C; }
+.nav-pill[href="#sA"]:hover, .nav-pill[href="#sA"].active { background: #C2255C; border-color: #C2255C; color: white; }
 .nav-pill[href="#sC"]:hover, .nav-pill[href="#sC"].active { background: #990033; border-color: #990033; }
 .nav-pill .pill-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   opacity: 0.7;
+}
+
+/* Sub-pills removed — all pills at same level */
+
+/* Divider between nav groups */
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+  margin: 0 2px;
+  align-self: center;
 }
 
 /* ── MAIN CONTENT ── */
@@ -324,8 +345,21 @@ body {
 .section-body {
   display: none;
   padding: 4px 0 0;
+  margin-left: 18px;
+  padding-left: 14px;
+  border-left: 2px solid var(--border-light);
 }
 .section.open .section-body { display: block; }
+
+/* Match section-body border to section color */
+#s1 .section-body { border-left-color: rgba(224,49,49,0.2); }
+#s2 .section-body { border-left-color: rgba(232,89,12,0.2); }
+#s3 .section-body { border-left-color: rgba(47,158,68,0.2); }
+#s4 .section-body { border-left-color: rgba(112,72,232,0.2); }
+#s5 .section-body { border-left-color: rgba(12,133,153,0.2); }
+#s6 .section-body { border-left-color: rgba(194,37,92,0.2); }
+#sA .section-body { border-left-color: rgba(194,37,92,0.2); }
+#sC .section-body { border-left-color: rgba(153,0,51,0.2); }
 
 /* ── CARDS ── */
 .card {
@@ -514,13 +548,30 @@ body {
 }
 .ref-table tr:last-child td { border-bottom: none; }
 
-/* ── CHECKLIST ── */
+/* ── SESSION CLOCK ── */
+.session-clock {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.12);
+  padding: 4px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+/* ── INTERACTIVE CHECKLISTS ── */
 .checklist { list-style: none; padding: 0; margin: 8px 0; }
 .checklist li {
   position: relative;
-  padding: 8px 0 8px 30px;
+  padding: 8px 0 8px 34px;
   font-size: 14px;
   border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s;
 }
 .checklist li:last-child { border-bottom: none; }
 .checklist li::before {
@@ -528,11 +579,65 @@ body {
   position: absolute;
   left: 0;
   top: 10px;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border: 2px solid var(--border);
-  border-radius: 4px;
+  border-radius: 5px;
   background: var(--surface);
+  transition: all 0.15s;
+}
+.checklist li.checked { opacity: 0.5; text-decoration: line-through; }
+.checklist li.checked::before {
+  background: #2F9E44;
+  border-color: #2F9E44;
+}
+.checklist li.checked::after {
+  content: '✓';
+  position: absolute;
+  left: 3px;
+  top: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  line-height: 20px;
+  width: 20px;
+  text-align: center;
+}
+
+/* ── KEYBOARD HINT ── */
+.search-kbd {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+.search-input:focus ~ .search-kbd,
+.search-clear.visible ~ .search-kbd { display: none; }
+
+/* ── PRINT STYLES ── */
+@media print {
+  .top-bar, .search-bar, .nav-pills, .btn-top, .btn-emergency,
+  .btn-expand-all, .section-chevron, .ch-chevron, .overlay, .emergency-panel { display: none !important; }
+  body { padding: 0; background: white; font-size: 12px; }
+  html { scroll-padding-top: 0; }
+  .section, .section-body, .card, .card-body { display: block !important; }
+  .section { margin-top: 14px; break-inside: avoid; }
+  .section-header { border-left: 4px solid currentColor; padding: 8px 12px; }
+  .card { margin-top: 6px; box-shadow: none; border: 1px solid #ccc; }
+  .card-body { padding: 10px 12px; }
+  .callout { break-inside: avoid; }
+  .lab-frame { break-inside: avoid; }
+  .site-footer { padding-top: 20px; border-top: 1px solid #ccc; }
+  a[href^="tel:"]::after { content: " (" attr(href) ")"; font-size: 10px; color: #666; }
 }
 
 /* ── LAB LAYOUT ── */
@@ -694,21 +799,7 @@ body {
   .lab-cubicle { padding: 8px 4px; }
 }
 
-/* ── FLOOR PLAN (legacy) ── */
-.floor-plan {
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  margin: 10px 0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  line-height: 1.8;
-  overflow-x: auto;
-  white-space: pre;
-  text-align: center;
-  color: var(--text-secondary);
-}
+
 
 /* ── EMERGENCY PANEL ── */
 .emergency-panel {
@@ -861,6 +952,7 @@ body {
   .section-header { padding: 12px 14px; gap: 10px; }
   .section-num { width: 32px; height: 32px; font-size: 13px; }
   .section-title h2 { font-size: 15px; }
+  .section-body { margin-left: 10px; padding-left: 10px; }
   html { scroll-padding-top: 120px; }
 }
 
@@ -951,7 +1043,59 @@ body {
   flex-shrink: 0;
 }
 
-/* ── TABLE OVERFLOW ── */
+/* ── SCHEDULE FILTER ── */
+.schedule-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.schedule-filter label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.schedule-filter select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 6px 30px 6px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235C564D' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  flex: 1;
+  max-width: 220px;
+}
+.schedule-filter select:focus { border-color: var(--cardinal); }
+.schedule-filter .filter-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.schedule-row-hidden { display: none; }
+.schedule-row-highlight td { background: #FFF8E1 !important; font-weight: 600; }
+.ref-table tr.schedule-next {
+  background: #FFF8E1;
+  font-weight: 600;
+}
+.ref-table tr.schedule-next td:first-child::before {
+  content: '▶ ';
+  color: #C49A10;
+  font-size: 11px;
+}
+.ref-table tr.schedule-past td {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
 .table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -980,6 +1124,7 @@ body {
 <header class="top-bar">
   <div class="top-bar-inner">
     <h1>In-Person Research Session Management <small>Marshall Behavioral Research Lab · BUAD 307 · Spring 2026</small></h1>
+    <div class="session-clock" id="sessionClock"></div>
     <button class="btn-emergency">⚠ Help</button>
   </div>
 </header>
@@ -999,14 +1144,17 @@ body {
 <!-- ═══ NAV PILLS ═══ -->
 <nav class="nav-pills" id="navPills">
   <div class="nav-pills-inner">
+    <a class="nav-pill" href="#schedule"><span class="pill-num">📅</span> Schedule</a>
+    <span class="nav-divider"></span>
     <a class="nav-pill" href="#s1"><span class="pill-num">§1</span> Orientation</a>
     <a class="nav-pill" href="#s2"><span class="pill-num">§2</span> Before</a>
     <a class="nav-pill" href="#s3"><span class="pill-num">§3</span> Check-In</a>
-    <a class="nav-pill" href="#script" style="background:#F0EAFF;border-color:#C4B0F0;color:#5A3DAA;"><span class="pill-num">📝</span> Script</a>
     <a class="nav-pill" href="#s4"><span class="pill-num">§4</span> Session</a>
+    <a class="nav-pill" href="#script"><span class="pill-num">📝</span> Script</a>
     <a class="nav-pill" href="#s5"><span class="pill-num">§5</span> After</a>
     <a class="nav-pill" href="#s6"><span class="pill-num">§6</span> Scenarios</a>
     <a class="nav-pill" href="#sA"><span class="pill-num">A–F</span> Appendices</a>
+    <span class="nav-divider"></span>
     <a class="nav-pill" href="#sC"><span class="pill-num">☎</span> Contacts</a>
   </div>
 </nav>
@@ -1020,9 +1168,76 @@ body {
 <main class="content" id="mainContent">
 
 <!-- ══════════════════════════════════════ -->
+<!-- SESSION SCHEDULE -->
+<!-- ══════════════════════════════════════ -->
+<div class="card" id="schedule" data-search style="border-left:4px solid var(--gold-muted);margin-bottom:16px;scroll-margin-top:150px;">
+  <div class="card-head" style="background:linear-gradient(135deg,#FFF8E1,#FFFDF5);">
+    <span class="ch-icon">📅</span> Spring 2026 Lab Session Schedule
+    <svg class="ch-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+  <div class="card-body">
+    <table class="ref-table">
+      <tr><th>Session</th><th>Date</th><th>PhD Supervisor</th><th>Email</th></tr>
+      <tr><td><strong>Lab 1</strong></td><td>Feb 23</td><td>Steve Carney</td><td><a href="mailto:Stephan.Carney@marshall.usc.edu">Stephan.Carney@marshall.usc.edu</a></td></tr>
+      <tr><td><strong>Lab 2</strong></td><td>Mar 2</td><td>Maansi Dalmia</td><td><a href="mailto:Maansi.Dalmia@marshall.usc.edu">Maansi.Dalmia@marshall.usc.edu</a></td></tr>
+      <tr><td><strong>Lab 3</strong></td><td>Apr 6</td><td>Swaroop Poudel</td><td><a href="mailto:Swaroop.Poudel@marshall.usc.edu">Swaroop.Poudel@marshall.usc.edu</a></td></tr>
+      <tr><td><strong>Lab 4</strong></td><td>Apr 13</td><td>Reyna Wang</td><td><a href="mailto:Qiurun.Wang@marshall.usc.edu">Qiurun.Wang@marshall.usc.edu</a></td></tr>
+      <tr><td><strong>Lab 5</strong></td><td>Apr 27</td><td>Minjeong Ko</td><td><a href="mailto:Minjeong.Ko@marshall.usc.edu">Minjeong.Ko@marshall.usc.edu</a></td></tr>
+    </table>
+    <p style="font-size:12.5px;color:var(--text-muted);margin-top:8px;">The PhD Supervisor listed is your point of contact for that session's study prep, order, and credits.</p>
+
+    <!-- Lab 1 Detailed Schedule -->
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border-light);">
+      <p style="font-weight:700;font-size:15px;margin-bottom:10px;">Lab 1 — Steve Carney · Week of Feb 23</p>
+
+      <div class="schedule-filter">
+        <label for="raFilter">My shifts:</label>
+        <select id="raFilter">
+          <option value="">Everyone</option>
+          <option value="Agustin">Agustin</option>
+          <option value="Alex">Alex</option>
+          <option value="Atvika">Atvika</option>
+          <option value="Joseph">Joseph</option>
+          <option value="Leia">Leia</option>
+          <option value="Saumya">Saumya</option>
+        </select>
+        <span class="filter-count" id="raFilterCount"></span>
+      </div>
+
+      <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;" class="schedule-day">Tuesday, Feb 24</p>
+      <table class="ref-table schedule-table" style="font-size:13px;">
+        <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+        <tr data-ra="Saumya" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Saumya</td></tr>
+        <tr data-ra="Saumya,Joseph"><td>1</td><td>9:00 – 10:00 AM</td><td>Saumya, Joseph</td></tr>
+        <tr data-ra="Saumya,Joseph"><td>2</td><td>10:00 – 11:00 AM</td><td>Saumya, Joseph</td></tr>
+        <tr data-ra="Saumya,Joseph"><td>3</td><td>11:00 – 12:00 PM</td><td>Saumya, Joseph</td></tr>
+        <tr data-ra="Saumya,Joseph"><td>4</td><td>12:00 – 1:00 PM</td><td>Saumya, Joseph</td></tr>
+        <tr data-ra="Joseph" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>1:30 – 2:00 PM</td><td>Joseph</td></tr>
+        <tr data-ra="Joseph,Atvika"><td>5</td><td>2:00 – 3:00 PM</td><td>Joseph, Atvika</td></tr>
+        <tr data-ra="Joseph,Atvika"><td>6</td><td>3:00 – 4:00 PM</td><td>Joseph, Atvika</td></tr>
+        <tr data-ra="Joseph,Atvika"><td>7</td><td>4:00 – 5:00 PM</td><td>Joseph, Atvika</td></tr>
+      </table>
+
+      <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Friday, Feb 27</p>
+      <table class="ref-table schedule-table" style="font-size:13px;">
+        <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+        <tr data-ra="Agustin" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Agustin</td></tr>
+        <tr data-ra="Agustin,Leia"><td>8</td><td>9:00 – 10:00 AM</td><td>Agustin, Leia</td></tr>
+        <tr data-ra="Agustin,Leia"><td>9</td><td>10:00 – 11:00 AM</td><td>Agustin, Leia</td></tr>
+        <tr data-ra="Agustin,Leia"><td>10</td><td>11:00 – 12:00 PM</td><td>Agustin, Leia</td></tr>
+        <tr data-ra="Agustin,Leia"><td>11</td><td>12:00 – 1:00 PM</td><td>Agustin, Leia</td></tr>
+        <tr data-ra="Agustin,Alex"><td>12</td><td>1:00 – 2:00 PM</td><td>Agustin, Alex</td></tr>
+        <tr data-ra="Agustin,Alex"><td>13</td><td>2:00 – 3:00 PM</td><td>Agustin, Alex</td></tr>
+        <tr data-ra="Agustin,Alex"><td>14</td><td>3:00 – 4:00 PM</td><td>Agustin, Alex</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
 <!-- §1 ORIENTATION -->
 <!-- ══════════════════════════════════════ -->
-<div class="section open" id="s1" data-search>
+<div class="section" id="s1" data-search>
   <div class="section-header">
     <div class="section-num">§1</div>
     <div class="section-title">
@@ -1034,7 +1249,7 @@ body {
   <div class="section-body">
 
     <!-- Lab Layout -->
-    <div class="card open" data-search>
+    <div class="card" data-search>
       <div class="card-head">
         <span class="ch-icon">🗺</span> Lab Layout — VPD LL102
         <svg class="ch-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
@@ -1116,7 +1331,7 @@ body {
         </div>
         <div class="callout callout-ra">
           <span class="label">Research Assistant</span>
-          Day-of operations: arrive 30 min early, power on computers, set up via School View, print sign-up sheet, prepare post-its/materials, run check-in, monitor participants, document in Google Spreadsheet, and manage end-of-session. Must have PhD Supervisor's email + phone.
+          Day-of operations: arrive 30 min early, power on computers, set up via School View, print sign-up sheet, prepare Post-its/materials, run check-in, monitor participants, document in Google Spreadsheet, and manage end-of-session. Must have PhD Supervisor's email + phone.
         </div>
         <p><strong>Lead RA:</strong> The person who performed setup. If the Lead RA leaves early, the assistant RA who started the day takes over as Lead for remaining sessions.</p>
       </div>
@@ -1152,7 +1367,7 @@ body {
         <p>The lab has full cell reception and WiFi, so you can reach contacts by phone, text, or Teams at any time during sessions. All lab communication goes to <strong>@marshall.usc.edu</strong> email — NOT @usc.edu. Make sure you are checking your Marshall email regularly.</p>
         <div class="callout callout-info">
           <span class="label">Escalation for Immediate Help</span>
-          <strong>1.</strong> On-site admin RA (LL110/LL112) → <strong>2.</strong> Brian Huh (213-821-9746) → <strong>3.</strong> PhD Supervisor
+          <strong>1.</strong> On-site admin RA (LL110/LL112) → <strong>2.</strong> Brian Huh (<a href="tel:2138219746" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-9746</a>) → <strong>3.</strong> PhD Supervisor
         </div>
         <p><strong>Teams Group Chat:</strong> <em>MKT In-Person Research Sessions – SPRING 2026</em>. All session coordination and real-time updates are posted here. Join before your first session.<br><a href="https://teams.microsoft.com/l/chat/19:be4aa85bf842401fbad417308372cfb9@thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D" target="_blank" style="color:var(--say-text);font-weight:600;">→ Join Teams Group Chat</a></p>
         <p>All RAs must have a Marshall Teams account. If you don't have one, let Brian know right away.</p>
@@ -1170,16 +1385,16 @@ body {
 
         <table class="ref-table">
           <tr><th>Detail</th><th>Value</th></tr>
-          <tr><td>Platform</td><td>simpletexting.com</td></tr>
+          <tr><td>Platform</td><td><a href="https://simpletexting.com" target="_blank" style="color:inherit;font-weight:600;">simpletexting.com</a></td></tr>
           <tr><td>Account Name</td><td>Behavioral (first), Lab (last)</td></tr>
-          <tr><td>Login Email</td><td>behaviorallab@marshall.usc.edu</td></tr>
+          <tr><td>Login Email</td><td><a href="mailto:behaviorallab@marshall.usc.edu">behaviorallab@marshall.usc.edu</a></td></tr>
           <tr><td>Password</td><td style="font-family:'JetBrains Mono',monospace;font-size:13px;">JTExT9Qr*ur+LiP</td></tr>
           <tr><td>Subject-Facing SMS #</td><td>(404) 446-4399</td></tr>
         </table>
 
         <p style="margin-top:12px;"><strong>Session Workflow:</strong></p>
         <div class="steps">
-          <div class="step"><div class="step-content"><strong>Log in</strong> as part of your session setup. Go to simpletexting.com, sign in with the lab credentials above, and open the Inbox alongside your other pre-session checklist items.</div></div>
+          <div class="step"><div class="step-content"><strong>Log in</strong> as part of your session setup. Go to <a href="https://simpletexting.com" target="_blank" style="color:inherit;font-weight:600;">simpletexting.com</a>, sign in with the lab credentials above, and open the Inbox alongside your other pre-session checklist items.</div></div>
           <div class="step"><div class="step-content"><strong>Keep the Inbox tab open</strong> for the duration of your session. Check it if a participant is late, or periodically between tasks.</div></div>
           <div class="step"><div class="step-content"><strong>When a text comes in, verify before responding</strong> (see verification checklist below).</div></div>
           <div class="step"><div class="step-content"><strong>Reply directly</strong> in the conversation thread. Keep messages brief and limited to logistics.</div></div>
@@ -1229,7 +1444,7 @@ body {
       <div class="card-body">
         <div class="callout callout-phd">
           <span class="label">PhD Supervisor Tasks</span>
-          Collect study info from researchers by Thursday. Decide study order & rotation. Specify order in Google Spreadsheet per session. Create browser links in Chrome (unless another browser was requested) in the study folder with meaningful names (<strong>never the researcher's name</strong>). Secure study materials throughout the session (make sure they do not run out). Prepare materials, post-its, pens. Distribute physical sign-up sheet to RAs.
+          Collect study info from researchers by Thursday. Decide study order & rotation. Specify order in Google Spreadsheet per session. Create browser links in Chrome (unless another browser was requested) in the study folder with meaningful names (<strong>never the researcher's name</strong>). Secure study materials throughout the session (make sure they do not run out). Prepare materials, Post-its, pens. Distribute physical sign-up sheet to RAs.
         </div>
         <div class="callout callout-ra">
           <span class="label">RA Tasks</span>
@@ -1249,17 +1464,24 @@ body {
         <svg class="ch-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </div>
       <div class="card-body">
-        <div class="steps">
-          <div class="step"><div class="step-content"><strong>Power on all 16 computers individually.</strong> Walk to each station and press the power button. Cannot be done remotely.</div></div>
-          <div class="step"><div class="step-content"><strong>Log in via Cross Tech School View</strong> at Proctor/RA Desk → click "Okay" → click "Continue" for collective login.</div></div>
-          <div class="step"><div class="step-content"><strong>Log into SimpleTexting</strong> (simpletexting.com) with lab credentials. Keep Inbox tab open.</div></div>
-          <div class="step"><div class="step-content"><strong>Open study folders</strong> on each machine. Hide webcams if unused.</div></div>
-          <div class="step"><div class="step-content"><strong>Print sign-up sheet</strong> from Google Spreadsheet (lab server laser printer or inkjet if no access). Verify the printed list matches the Google Spreadsheet before the session starts.</div></div>
-          <div class="step"><div class="step-content"><strong>Write participant IDs on post-its.</strong> Stage materials for 16 stations. Hide food/supplies under tables.</div></div>
-        </div>
+        <ul class="checklist">
+          <li><strong>Power on all 16 computers individually.</strong> Walk to each station and press the power button. Cannot be done remotely.</li>
+          <li><strong>Log in via Cross Tech School View</strong> at Proctor/RA Desk → click "Okay" → click "Continue" for collective login.</li>
+          <li><strong>Log into SimpleTexting</strong> (<a href="https://simpletexting.com" target="_blank" style="color:inherit;font-weight:600;">simpletexting.com</a>) with lab credentials. Keep Inbox tab open.</li>
+          <li><strong>Open study folders on each machine:</strong> VPD folder → Temp → [current week's folder]. Hide webcams if unused.</li>
+          <li><strong>Print sign-up sheet</strong> from Google Spreadsheet (lab server laser printer or inkjet if no access). Verify the printed list matches the Google Spreadsheet.</li>
+          <li><strong>Write SONA IDs on Post-its — 2 per person.</strong> One Post-it goes on their phone (placed in wall pocket at check-in), the other goes with them to their station.</li>
+          <li><strong>Stage materials for 16 stations.</strong> Hide food/supplies under tables.</li>
+        </ul>
         <div class="callout callout-hard" style="margin-top:14px;">
           <span class="label">⬛ Verify Before Session</span>
-          ☐ VOIP phone working · ☐ Video doorbell active · ☐ Both emergency exits located · ☐ Card access works · ☐ SimpleTexting Inbox open
+          <ul class="checklist">
+            <li>VOIP phone working</li>
+            <li>Video doorbell active</li>
+            <li>Both emergency exits located</li>
+            <li>Card access works</li>
+            <li>SimpleTexting Inbox open</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -1366,9 +1588,9 @@ body {
         <div class="steps">
           <div class="step"><div class="step-content">Open the door. Have participants enter <strong>one by one</strong>.</div></div>
           <div class="step"><div class="step-content">Ask for their <strong>5- or 6-digit SONA ID</strong>. Check them off the list.</div></div>
-          <div class="step"><div class="step-content">Collect phone — verify it is <strong>completely off</strong> (not just silenced) → place in wall pocket. Remind any late-comers who arrive before doors close that their phone must also be turned off and placed in the wall pocket.</div></div>
-          <div class="step"><div class="step-content">Give them the post-it with their ID number. Ask them to place it on their station where they can see it.</div></div>
-          <div class="step"><div class="step-content">Bags to back wall. <strong>Water OK</strong> (unless study specifies otherwise). No other drinks or food.</div></div>
+          <div class="step"><div class="step-content">Collect phone — verify it is <strong>completely off</strong> (not just silenced). Stick one Post-it with their SONA ID on the phone, then place phone in wall pocket. Remind any late-comers before doors close.</div></div>
+          <div class="step"><div class="step-content">Give them the <strong>second Post-it</strong> with their ID number. Ask them to place it on their station where they can see it.</div></div>
+          <div class="step"><div class="step-content"><strong>Backpacks along the back wall.</strong> Water OK (unless study specifies otherwise). No other drinks or food — leave with their belongings in the back.</div></div>
           <div class="step"><div class="step-content"><strong>Assign random seat</strong> (stations are numbered). Alternate throughout the room. Separate friends who enter together.</div></div>
           <div class="step"><div class="step-content">Tell them: <strong>"Don't touch the computer — everybody starts together."</strong> (This announcement may have to be repeated midway through check-in.)</div></div>
         </div>
@@ -1496,7 +1718,12 @@ body {
 
         <div class="callout callout-info" style="margin-top:14px;">
           <span class="label">✔ Session Start Checklist</span>
-          ☐ All participants have their 6-digit ID on Post-it · ☐ Headphones distributed (if applicable) · ☐ Participants ready to begin · ☐ Both RAs positioned and ready
+          <ul class="checklist">
+            <li>All participants have their 6-digit ID on Post-it</li>
+            <li>Headphones distributed (if applicable)</li>
+            <li>Participants ready to begin</li>
+            <li>Both RAs positioned and ready</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -1672,7 +1899,14 @@ body {
           <div class="speaker">RA — Dismiss</div>
           <p>Thank everybody for their participation and for helping with the research. Credit will be assigned by the end of the day.</p>
         </div>
-        <p><strong>Then:</strong> Return phones from wall pockets. Dismiss participants. Log out of SimpleTexting.</p>
+        <p><strong>Then:</strong></p>
+        <ul class="checklist">
+          <li>Return phones from wall pockets</li>
+          <li>Dismiss participants</li>
+          <li>Close all open study content, browser tabs, and survey windows on every station — screens clear for next group</li>
+          <li>Collect Post-its from stations and phones</li>
+          <li>Log out of SimpleTexting</li>
+        </ul>
       </div>
     </div>
 
@@ -1768,7 +2002,7 @@ body {
         </div>
         <div class="callout callout-emergency">
           <span class="label">If You Feel Unsafe</span>
-          Call DPS using VOIP phone at Proctor/RA Desk: <strong>213-740-4321</strong>
+          Call DPS using VOIP phone at Proctor/RA Desk: <strong><a href="tel:2137404321" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-740-4321</a></strong>
         </div>
       </div>
     </div>
@@ -1795,11 +2029,11 @@ body {
         <div class="callout callout-emergency">
           <span class="label">🏥 Medical Emergency</span>
           <strong>Life-threatening →</strong> Call 911. Location: VPD LL102, 635 Downey Way, LA 90089.<br>
-          <strong>Serious but stable →</strong> Call Brian (213-821-9746) + DPS (213-740-4321).
+          <strong>Serious but stable →</strong> Call Brian (<a href="tel:2138219746" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-9746</a>) + DPS (<a href="tel:2137404321" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-740-4321</a>).
         </div>
         <div class="callout callout-emergency">
           <span class="label">🏢 Facilities Issues</span>
-          <strong>Dangerous</strong> (flood/electrical/gas): EVACUATE. Contact Brian & Ian McCully (213-821-0707).<br>
+          <strong>Dangerous</strong> (flood/electrical/gas): EVACUATE. Contact Brian & Ian McCully (<a href="tel:2138210707" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-0707</a>).<br>
           <strong>Non-dangerous</strong> (HVAC/power): Contact PhD. Decide to continue or end. Contact Ian McCully.
         </div>
         <p><strong>Emergency Exits — Know Before Every Session:</strong><br>Exit 1: Emergency staircase on the side of LL102 (computer lab)<br>Exit 2: Lab suites side exit (LL110/112)<br>Follow the VPD Emergency Protocol sheet. Choose the nearest <strong>SAFE</strong> exit based on the emergency location.</p>
@@ -1857,9 +2091,9 @@ body {
         <div class="steps">
           <div class="step"><div class="step-content">Ask for 5- or 6-digit SONA ID</div></div>
           <div class="step"><div class="step-content">Check off list</div></div>
-          <div class="step"><div class="step-content">Collect phone (turned off) → wall pocket</div></div>
-          <div class="step"><div class="step-content">Give post-it with ID number</div></div>
-          <div class="step"><div class="step-content">Bags to back wall (water OK, no other food/drinks)</div></div>
+          <div class="step"><div class="step-content">Collect phone (completely off) → stick SONA ID Post-it on phone → wall pocket</div></div>
+          <div class="step"><div class="step-content">Give second Post-it with ID number for their station</div></div>
+          <div class="step"><div class="step-content">Backpacks along back wall (water OK, no other food/drinks)</div></div>
           <div class="step"><div class="step-content">Assign random seat (separate friends)</div></div>
           <div class="step"><div class="step-content">"Don't touch computer — everyone starts together"</div></div>
         </div>
@@ -1903,7 +2137,7 @@ body {
         </table>
         <div class="callout callout-info" style="margin-top:10px;">
           <span class="label">Escalation if Not Resolved</span>
-          1. On-site admin RA (LL110/LL112) → 2. Brian Huh (213-821-9746) → 3. PhD Supervisor<br>
+          1. On-site admin RA (LL110/LL112) → 2. Brian Huh (<a href="tel:2138219746" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-9746</a>) → 3. PhD Supervisor<br>
           <strong>NEVER enter participant data.</strong> Close and clear cache instead.
         </div>
       </div>
@@ -1918,12 +2152,12 @@ body {
       <div class="card-body">
         <div class="callout callout-emergency">
           <span class="label">Safety / Security Emergency — Parallel Contact</span>
-          Contact BOTH PhD Supervisor + Brian Huh (213-821-9746) AT THE SAME TIME.<br>
-          Immediate danger? → Call DPS: 213-740-4321 (VOIP phone at Proctor Desk)
+          Contact BOTH PhD Supervisor + Brian Huh (<a href="tel:2138219746" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-9746</a>) AT THE SAME TIME.<br>
+          Immediate danger? → Call DPS: <a href="tel:2137404321" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-740-4321</a> (VOIP phone at Proctor Desk)
         </div>
         <div class="callout callout-info">
           <span class="label">Normal Issue — Sequential Escalation</span>
-          1. On-Site Admin RA (LL110/LL112) → 2. Brian Huh (213-821-9746, Teams/Text/Call) → 3. PhD Supervisor
+          1. On-Site Admin RA (LL110/LL112) → 2. Brian Huh (<a href="tel:2138219746" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-9746</a>, Teams/Text/Call) → 3. PhD Supervisor
         </div>
       </div>
     </div>
@@ -1941,7 +2175,7 @@ body {
           <tr><td>🌍 Earthquake</td><td>DROP, COVER, HOLD ON. Under desks. After: check damage. Unsafe = evacuate. Safe = PhD decides.</td></tr>
           <tr><td>🚨 Active Threat</td><td>RUN → HIDE (lock, lights off, silent) → FIGHT (last resort). Call 911 when safe.</td></tr>
           <tr><td>🏥 Medical</td><td>Life-threatening = 911. Location: VPD LL102, 635 Downey Way. Stable = Brian + DPS.</td></tr>
-          <tr><td>🏢 Facilities (dangerous)</td><td>EVACUATE. Contact Brian & Ian McCully (213-821-0707).</td></tr>
+          <tr><td>🏢 Facilities (dangerous)</td><td>EVACUATE. Contact Brian & Ian McCully (<a href="tel:2138210707" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-0707</a>).</td></tr>
           <tr><td>🏢 Facilities (non-dangerous)</td><td>Contact PhD. Decide continue/end. Contact Ian McCully.</td></tr>
         </table>
         <p style="margin-top:10px;"><strong>Participant safety is #1.</strong> Leave research data behind if necessary. Follow VPD Emergency Protocol sheet for detailed procedures.</p>
@@ -1970,7 +2204,7 @@ body {
     <div class="section-num" style="font-size:14px;">☎</div>
     <div class="section-title">
       <h2>Contact Directory</h2>
-      <div class="section-sub">Primary Contacts · IT · Facilities · Emergency</div>
+      <div class="section-sub">Primary Contacts · Team Directory · IT · Facilities · Emergency</div>
     </div>
     <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
   </div>
@@ -1982,7 +2216,7 @@ body {
         <table class="ref-table">
           <tr><th>Person</th><th>Role</th><th>Contact</th></tr>
           <tr>
-            <td><strong>Brian Huh</strong></td>
+            <td><strong>Brian Huh</strong> <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td>
             <td>Lab Manager, Marshall Behavioral Research Lab<br><em style="font-size:12px;color:var(--text-muted);">Contact for: Lab access issues, session support, credit issues, general lab operations</em></td>
             <td><a href="mailto:huhb@marshall.usc.edu">huhb@marshall.usc.edu</a><br><a href="tel:2138219746">213-821-9746</a><br>Office: Main lab suite, lower level (below lobby level)</td>
           </tr>
@@ -2001,6 +2235,44 @@ body {
             <td>Facilities Manager, Provost (Interim)<br><em style="font-size:12px;color:var(--text-muted);">Contact for: Building access, HVAC, facilities maintenance, room issues</em></td>
             <td><a href="mailto:mccully@usc.edu">mccully@usc.edu</a><br><a href="tel:2138210707">213-821-0707</a> (direct) · <a href="tel:6616182697">661-618-2697</a> (cell)<br>Office: 837 Downey Way, STO 309, MC 1146, LA 90089-0751</td>
           </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" data-search>
+      <div class="card-head">
+        <span class="ch-icon">👥</span> Team Directory — PhDs & Research Assistants
+        <svg class="ch-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px;">Spring 2026 · MKT Research Participation for BUAD 307</p>
+
+        <p style="font-weight:600;margin-bottom:6px;color:var(--phd-text);">PhD Research Supervisors</p>
+        <table class="ref-table">
+          <tr><th>Name</th><th>Email</th></tr>
+          <tr><td><strong>Ryan Bruno</strong></td><td><a href="mailto:ryan.bruno@chicagobooth.edu">ryan.bruno@chicagobooth.edu</a></td></tr>
+          <tr><td><strong>Steve Carney</strong></td><td><a href="mailto:Stephan.Carney@marshall.usc.edu">Stephan.Carney@marshall.usc.edu</a></td></tr>
+          <tr><td><strong>Maansi Dalmia</strong></td><td><a href="mailto:Maansi.Dalmia@marshall.usc.edu">Maansi.Dalmia@marshall.usc.edu</a></td></tr>
+          <tr><td><strong>Minjeong Ko</strong></td><td><a href="mailto:Minjeong.Ko@marshall.usc.edu">Minjeong.Ko@marshall.usc.edu</a></td></tr>
+          <tr><td><strong>Iva Mihajlovic</strong></td><td><a href="mailto:Iva.Mihajlovic@marshall.usc.edu">Iva.Mihajlovic@marshall.usc.edu</a></td></tr>
+          <tr><td><strong>Zen Nguyen</strong></td><td><a href="mailto:Zen.Nguyen@marshall.usc.edu">Zen.Nguyen@marshall.usc.edu</a></td></tr>
+          <tr><td><strong>Swaroop Poudel</strong></td><td><a href="mailto:Swaroop.Poudel@marshall.usc.edu">Swaroop.Poudel@marshall.usc.edu</a></td></tr>
+          <tr><td><strong>Reyna Wang</strong></td><td><a href="mailto:Qiurun.Wang@marshall.usc.edu">Qiurun.Wang@marshall.usc.edu</a></td></tr>
+        </table>
+
+        <p style="font-weight:600;margin:16px 0 6px;color:var(--ra-text);">Research Assistants</p>
+        <table class="ref-table">
+          <tr><th>Name</th><th>Email</th></tr>
+          <tr><td>Alexander Alonzo</td><td><a href="mailto:afalonzo@marshall.usc.edu">afalonzo@marshall.usc.edu</a></td></tr>
+          <tr><td>Lissa Fredrickson</td><td><a href="mailto:ifredric@marshall.usc.edu">ifredric@marshall.usc.edu</a></td></tr>
+          <tr><td>Atvika Gaur</td><td><a href="mailto:atvikaga@marshall.usc.edu">atvikaga@marshall.usc.edu</a></td></tr>
+          <tr><td>Saumya Ketan Jhaveri</td><td><a href="mailto:saumyake@marshall.usc.edu">saumyake@marshall.usc.edu</a></td></tr>
+          <tr><td>Agustin Montes Tacuba</td><td><a href="mailto:Agustin.Montes-Tacuba.2026@marshall.usc.edu">Agustin.Montes-Tacuba.2026@marshall.usc.edu</a></td></tr>
+          <tr><td>Chanelle Scheffer <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:scheffer@marshall.usc.edu">scheffer@marshall.usc.edu</a></td></tr>
+          <tr><td>Joseph Solomon</td><td><a href="mailto:jas62030@marshall.usc.edu">jas62030@marshall.usc.edu</a></td></tr>
+          <tr><td>Bri Tran <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:bnt@marshall.usc.edu">bnt@marshall.usc.edu</a></td></tr>
+          <tr><td>Derek Wang <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:wangdere@marshall.usc.edu">wangdere@marshall.usc.edu</a></td></tr>
+          <tr><td>Leia Yen</td><td><a href="mailto:lay_094@marshall.usc.edu">lay_094@marshall.usc.edu</a></td></tr>
         </table>
       </div>
     </div>
@@ -2050,17 +2322,17 @@ body {
     </div>
     <div class="e-contact">
       <div class="e-icon green">👤</div>
-      <div class="e-info"><div class="e-name">Brian Huh</div><div class="e-role">Lab Manager · 213-821-9746</div></div>
+      <div class="e-info"><div class="e-name">Brian Huh</div><div class="e-role">Lab Manager · <a href="tel:2138219746" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-9746</a></div></div>
       <div class="e-action"><a href="tel:2138219746">📞 Call</a></div>
     </div>
     <div class="e-contact">
       <div class="e-icon teal">🏢</div>
-      <div class="e-info"><div class="e-name">Ian McCully</div><div class="e-role">Facilities · 213-821-0707</div></div>
+      <div class="e-info"><div class="e-name">Ian McCully</div><div class="e-role">Facilities · <a href="tel:2138210707" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-0707</a></div></div>
       <div class="e-action"><a href="tel:2138210707">📞 Call</a></div>
     </div>
     <div class="e-contact">
       <div class="e-icon" style="background:#5E35B1;">🖥</div>
-      <div class="e-info"><div class="e-name">Peter Bonavita</div><div class="e-role">Marshall IT · 213-821-4615</div></div>
+      <div class="e-info"><div class="e-name">Peter Bonavita</div><div class="e-role">Marshall IT · <a href="tel:2138214615" style="color:inherit;text-decoration:underline dotted;text-underline-offset:2px;">213-821-4615</a></div></div>
       <div class="e-action"><a href="tel:2138214615">📞 Call</a></div>
     </div>
     <div class="e-contact">
@@ -2182,14 +2454,45 @@ body {
     document.body.style.overflow = '';
   }
 
-  // ── BACK TO TOP VISIBILITY ──
+  // ── BACK TO TOP VISIBILITY + SEARCH BAR AUTO-HIDE ──
   var btnTop = document.getElementById('btnTop');
+  var searchBar = document.querySelector('.search-bar');
+  var navPillsEl = document.getElementById('navPills');
+  var lastScrollY = 0;
+  var searchHidden = false;
+
   window.addEventListener('scroll', function() {
-    if (window.scrollY > 400) {
-      btnTop.classList.add('visible');
-    } else {
-      btnTop.classList.remove('visible');
+    var y = window.scrollY;
+
+    // Back to top
+    if (y > 400) btnTop.classList.add('visible');
+    else btnTop.classList.remove('visible');
+
+    // Auto-hide search on scroll down, show on scroll up
+    // Don't hide if user is actively searching
+    if (searchInput.value.trim().length > 0) {
+      if (searchHidden) {
+        searchBar.classList.remove('hidden');
+        navPillsEl.style.top = '';
+        searchHidden = false;
+      }
+    } else if (y > 200 && y > lastScrollY + 5) {
+      // Scrolling down
+      if (!searchHidden) {
+        searchBar.classList.add('hidden');
+        navPillsEl.style.top = '56px';
+        searchHidden = true;
+      }
+    } else if (y < lastScrollY - 5) {
+      // Scrolling up
+      if (searchHidden) {
+        searchBar.classList.remove('hidden');
+        navPillsEl.style.top = '';
+        searchHidden = false;
+      }
     }
+
+    lastScrollY = y;
   }, { passive: true });
 
   // ── NAV PILLS — active state + auto-scroll into view ──
@@ -2348,6 +2651,164 @@ body {
     resetSearch();
     searchInput.focus();
   }
+
+  // ── SESSION CLOCK ──
+  var clockEl = document.getElementById('sessionClock');
+  function updateClock() {
+    var now = new Date();
+    var h = now.getHours();
+    var m = now.getMinutes();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    clockEl.textContent = h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+  }
+  updateClock();
+  setInterval(updateClock, 15000);
+
+  // ── INTERACTIVE CHECKLISTS ──
+  document.addEventListener('click', function(e) {
+    var li = e.target.closest('.checklist li');
+    if (li) {
+      li.classList.toggle('checked');
+      return;
+    }
+  });
+
+  // ── SCHEDULE HIGHLIGHTING ──
+  (function() {
+    var dates = [
+      new Date(2026, 1, 23), // Feb 23
+      new Date(2026, 2, 2),  // Mar 2
+      new Date(2026, 3, 6),  // Apr 6
+      new Date(2026, 3, 13), // Apr 13
+      new Date(2026, 3, 27)  // Apr 27
+    ];
+    var table = document.querySelector('#schedule .ref-table');
+    if (!table) return;
+    var rows = table.querySelectorAll('tr');
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var foundNext = false;
+    for (var i = 1; i < rows.length; i++) {
+      var sessionDate = dates[i - 1];
+      if (sessionDate < today) {
+        rows[i].classList.add('schedule-past');
+      } else if (!foundNext) {
+        rows[i].classList.add('schedule-next');
+        foundNext = true;
+      }
+    }
+  })();
+
+  // ── RA SCHEDULE FILTER ──
+  (function() {
+    var select = document.getElementById('raFilter');
+    var countEl = document.getElementById('raFilterCount');
+    if (!select) return;
+
+    select.addEventListener('change', function() {
+      var name = this.value;
+      var tables = document.querySelectorAll('.schedule-table');
+      var dayLabels = document.querySelectorAll('.schedule-day');
+      var totalShifts = 0;
+      var setupShifts = 0;
+
+      for (var t = 0; t < tables.length; t++) {
+        var rows = tables[t].querySelectorAll('tr[data-ra]');
+        var dayVisible = false;
+
+        for (var r = 0; r < rows.length; r++) {
+          var row = rows[r];
+          var ras = row.getAttribute('data-ra').split(',');
+          row.classList.remove('schedule-row-hidden', 'schedule-row-highlight');
+
+          if (name === '') {
+            // Show all
+            row.classList.remove('schedule-row-hidden');
+            dayVisible = true;
+          } else {
+            var match = false;
+            for (var a = 0; a < ras.length; a++) {
+              if (ras[a].trim() === name) { match = true; break; }
+            }
+            if (match) {
+              row.classList.remove('schedule-row-hidden');
+              row.classList.add('schedule-row-highlight');
+              dayVisible = true;
+              var isSetup = row.querySelector('td') && row.querySelector('td').textContent === 'SETUP';
+              if (isSetup) setupShifts++;
+              else totalShifts++;
+            } else {
+              row.classList.add('schedule-row-hidden');
+            }
+          }
+        }
+
+        // Show/hide day labels
+        if (dayLabels[t]) {
+          dayLabels[t].style.display = dayVisible || name === '' ? '' : 'none';
+        }
+      }
+
+      // Update count
+      if (name === '') {
+        countEl.textContent = '';
+      } else {
+        var parts = [];
+        if (totalShifts > 0) parts.push(totalShifts + ' session' + (totalShifts === 1 ? '' : 's'));
+        if (setupShifts > 0) parts.push(setupShifts + ' setup');
+        countEl.textContent = parts.length > 0 ? parts.join(' + ') : 'No shifts assigned';
+      }
+    });
+  })();
+
+  // ── DEEP LINK SUPPORT ──
+  function handleHash() {
+    var hash = window.location.hash;
+    if (hash && hash.length > 1) {
+      var target = document.querySelector(hash);
+      if (target) {
+        var parentSection = target.closest('.section');
+        if (parentSection) parentSection.classList.add('open');
+        if (target.classList.contains('card')) target.classList.add('open');
+        else if (target.classList.contains('section')) target.classList.add('open');
+        setTimeout(function() {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }
+  handleHash();
+  window.addEventListener('hashchange', handleHash);
+
+  // ── KEYBOARD SHORTCUTS ──
+  document.addEventListener('keydown', function(e) {
+    // Escape closes help panel
+    if (e.key === 'Escape') {
+      var panel = document.getElementById('emergencyPanel');
+      if (panel.classList.contains('open')) {
+        closeHelp();
+        return;
+      }
+      // Escape also clears search if focused
+      if (document.activeElement === searchInput && searchInput.value) {
+        clearSearch();
+        searchInput.blur();
+        return;
+      }
+    }
+    // "/" focuses search (when not already in an input)
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      // Reveal search bar if hidden
+      if (searchHidden) {
+        searchBar.classList.remove('hidden');
+        navPillsEl.style.top = '';
+        searchHidden = false;
+      }
+      searchInput.focus();
+    }
+  });
 
 })();
 </script>

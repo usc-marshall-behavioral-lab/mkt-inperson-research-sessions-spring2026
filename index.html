@@ -8,6 +8,84 @@
 <title>In-Person Research Session Management · Spring 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ── PASSWORD GATE ── */
+.pw-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #990000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.pw-gate.unlocked { display: none; }
+.pw-box {
+  background: white;
+  border-radius: 16px;
+  padding: 40px 32px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.pw-box h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1714;
+  margin-bottom: 4px;
+}
+.pw-box .pw-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #8A8379;
+  margin-bottom: 24px;
+}
+.pw-box input {
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  padding: 12px 16px;
+  border: 2px solid #E2DFD8;
+  border-radius: 8px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+.pw-box input:focus { border-color: #990000; }
+.pw-box input.pw-error {
+  border-color: #E03131;
+  animation: pwShake 0.4s ease;
+}
+@keyframes pwShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+.pw-box button {
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px;
+  margin-top: 12px;
+  background: #990000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.pw-box button:active { background: #7a0000; }
+.pw-box .pw-hint {
+  font-size: 12px;
+  color: #E03131;
+  margin-top: 10px;
+  min-height: 18px;
+}
+.app-content { display: none; }
+.app-content.unlocked { display: block; }
+
 :root {
   --cardinal: #990000;
   --cardinal-dark: #7a0000;
@@ -1270,6 +1348,20 @@ body {
 </style>
 </head>
 <body>
+
+<!-- ═══ PASSWORD GATE ═══ -->
+<div class="pw-gate" id="pwGate">
+  <div class="pw-box">
+    <h1>🔒 BUAD 307</h1>
+    <p class="pw-sub">Marshall Behavioral Research Lab · Spring 2026</p>
+    <input type="password" id="pwInput" placeholder="Enter password" autocomplete="off">
+    <button id="pwSubmit">Unlock</button>
+    <div class="pw-hint" id="pwHint"></div>
+  </div>
+</div>
+
+<!-- ═══ APP CONTENT (hidden until authenticated) ═══ -->
+<div class="app-content" id="appContent">
 
 <!-- ═══ TOP BAR ═══ -->
 <header class="top-bar">
@@ -3102,6 +3194,49 @@ body {
     }
   });
 
+})();
+</script>
+
+</div><!-- /app-content -->
+
+<script>
+// ── PASSWORD GATE ──
+(function() {
+  var gate = document.getElementById('pwGate');
+  var app = document.getElementById('appContent');
+  var input = document.getElementById('pwInput');
+  var btn = document.getElementById('pwSubmit');
+  var hint = document.getElementById('pwHint');
+  var KEY = 'buad307_auth';
+
+  function unlock() {
+    gate.classList.add('unlocked');
+    app.classList.add('unlocked');
+    try { sessionStorage.setItem(KEY, '1'); } catch(e) {}
+  }
+
+  function attempt() {
+    if (input.value === 'Fighton!') {
+      unlock();
+    } else {
+      input.classList.add('pw-error');
+      hint.textContent = 'Incorrect password';
+      setTimeout(function() { input.classList.remove('pw-error'); }, 400);
+      input.select();
+    }
+  }
+
+  // Check if already authenticated this session
+  try {
+    if (sessionStorage.getItem(KEY) === '1') { unlock(); return; }
+  } catch(e) {}
+
+  btn.addEventListener('click', attempt);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') attempt();
+    hint.textContent = '';
+  });
+  input.focus();
 })();
 </script>
 </body>

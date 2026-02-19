@@ -31,10 +31,11 @@
 }
 .pw-box h1 {
   font-family: 'DM Sans', sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #1A1714;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  line-height: 1.3;
 }
 .pw-box .pw-sub {
   font-family: 'DM Sans', sans-serif;
@@ -317,8 +318,10 @@ body {
   white-space: nowrap;
 }
 .cl-badge.before { background: #E8590C; }
+.cl-badge.checkin { background: #2F9E44; }
 .cl-badge.session { background: #7048E8; }
 .cl-badge.after { background: #0C8599; }
+.cl-badge.between { background: #C49A10; }
 .cl-section-head h3 { font-size: 15px; font-weight: 700; }
 .cl-section-head .cl-when {
   margin-left: auto;
@@ -1272,6 +1275,220 @@ body {
   flex-shrink: 0;
 }
 
+/* ── SCHEDULE VIEW TOGGLE ── */
+.sched-views {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface-alt);
+}
+.sched-view-btn {
+  flex: 1;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 12px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.sched-view-btn:first-child { border-right: 1.5px solid var(--border); }
+.sched-view-btn.active {
+  background: var(--cardinal);
+  color: white;
+}
+.sched-view-btn:not(.active):hover {
+  background: var(--border-light);
+  color: var(--text);
+}
+
+/* ── MY SCHEDULE VIEW ── */
+.sched-my { display: none; }
+.sched-my.active { display: block; }
+.sched-bylab { display: none; }
+.sched-bylab.active { display: block; }
+
+.sched-summary {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+}
+.sched-stat {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.sched-stat strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cardinal);
+  display: block;
+  line-height: 1.1;
+}
+
+.sched-date-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding: 14px 0 6px;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sched-date-header:first-child { padding-top: 0; }
+.sched-date-header .sched-date-lab {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: white;
+  margin-left: auto;
+}
+.sched-date-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.sched-shift {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  transition: border-color 0.15s;
+}
+.sched-shift:hover { border-color: var(--border); }
+.sched-shift.is-setup {
+  background: var(--surface-alt);
+  border-style: dashed;
+  opacity: 0.7;
+}
+
+.sched-shift-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 120px;
+  flex-shrink: 0;
+}
+@media (max-width: 420px) {
+  .sched-shift-time { min-width: 95px; font-size: 11px; }
+}
+
+.sched-lab-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: white;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sched-lab-badge.lab-1 { background: #E03131; }
+.sched-lab-badge.lab-2 { background: #E8590C; }
+.sched-lab-badge.lab-3 { background: #2F9E44; }
+.sched-lab-badge.lab-4 { background: #7048E8; }
+.sched-lab-badge.lab-5 { background: #0C8599; }
+
+.sched-shift-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 18px;
+}
+
+.sched-shift-partner {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  flex: 1;
+  text-align: right;
+}
+.sched-shift-partner strong { font-weight: 600; color: var(--text); }
+
+.sched-empty {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text-muted);
+}
+.sched-empty .sched-empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.4;
+}
+.sched-empty p { font-size: 14px; }
+.sched-empty p strong { color: var(--text-secondary); }
+
+.sched-next-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: #FFF3CD;
+  color: #856404;
+  border: 1px solid #FFE69C;
+  margin-left: 6px;
+}
+
+/* ── LAB TABS ── */
+.lab-tabs {
+  display: flex;
+  gap: 0;
+  margin-top: 18px;
+  border-bottom: 2px solid var(--border);
+}
+.lab-tab {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.lab-tab:hover { color: var(--text-secondary); }
+.lab-tab.active {
+  color: var(--cardinal);
+  border-bottom-color: var(--cardinal);
+}
+.lab-tab .tab-date {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+.lab-tab.active .tab-date { color: var(--cardinal); opacity: 0.7; }
+.lab-tab-panel { display: none; padding-top: 12px; }
+.lab-tab-panel.active { display: block; }
+
 /* ── SCHEDULE FILTER ── */
 .schedule-filter {
   display: flex;
@@ -1352,8 +1569,9 @@ body {
 <!-- ═══ PASSWORD GATE ═══ -->
 <div class="pw-gate" id="pwGate">
   <div class="pw-box">
-    <h1>🔒 BUAD 307</h1>
-    <p class="pw-sub">Marshall Behavioral Research Lab · Spring 2026</p>
+    <h1>In-Person Research Session Management</h1>
+    <p class="pw-sub">Marshall Behavioral Research Lab · BUAD 307 · Spring 2026</p>
+    <div style="width:40px;height:2px;background:var(--cardinal);margin:16px auto 20px;border-radius:1px;"></div>
     <input type="password" id="pwInput" placeholder="Enter password" autocomplete="off">
     <button id="pwSubmit">Unlock</button>
     <div class="pw-hint" id="pwHint"></div>
@@ -1423,21 +1641,23 @@ body {
   </div>
   <div class="card-body">
     <table class="ref-table">
-      <tr><th>Session</th><th>Date</th><th>PhD Supervisor</th><th>Email</th></tr>
-      <tr><td><strong>Lab 1</strong></td><td>Feb 23</td><td>Steve Carney</td><td><a href="mailto:Stephan.Carney@marshall.usc.edu">Stephan.Carney@marshall.usc.edu</a></td></tr>
-      <tr><td><strong>Lab 2</strong></td><td>Mar 2</td><td>Maansi Dalmia</td><td><a href="mailto:Maansi.Dalmia@marshall.usc.edu">Maansi.Dalmia@marshall.usc.edu</a></td></tr>
-      <tr><td><strong>Lab 3</strong></td><td>Apr 6</td><td>Swaroop Poudel</td><td><a href="mailto:Swaroop.Poudel@marshall.usc.edu">Swaroop.Poudel@marshall.usc.edu</a></td></tr>
-      <tr><td><strong>Lab 4</strong></td><td>Apr 13</td><td>Reyna Wang</td><td><a href="mailto:Qiurun.Wang@marshall.usc.edu">Qiurun.Wang@marshall.usc.edu</a></td></tr>
-      <tr><td><strong>Lab 5</strong></td><td>Apr 27</td><td>Minjeong Ko</td><td><a href="mailto:Minjeong.Ko@marshall.usc.edu">Minjeong.Ko@marshall.usc.edu</a></td></tr>
+      <tr><th>Session</th><th>Date</th><th>PhD Supervisor</th></tr>
+      <tr><td><strong>Lab 1</strong></td><td>Week of Feb 23</td><td>Steve Carney</td></tr>
+      <tr><td><strong>Lab 2</strong></td><td>Week of Mar 2</td><td>Maansi Dalmia</td></tr>
+      <tr><td><strong>Lab 3</strong></td><td>Week of Apr 6</td><td>Swaroop Poudel</td></tr>
+      <tr><td><strong>Lab 4</strong></td><td>Week of Apr 13</td><td>Reyna Wang</td></tr>
+      <tr><td><strong>Lab 5</strong></td><td>Week of Apr 27</td><td>Minjeong Ko</td></tr>
     </table>
     <p style="font-size:12.5px;color:var(--text-muted);margin-top:8px;">The PhD Supervisor listed is your point of contact for that session's study prep, order, and credits.</p>
 
-    <!-- Lab 1 Detailed Schedule -->
-    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border-light);">
-      <p style="font-weight:700;font-size:15px;margin-bottom:10px;">Lab 1 — Steve Carney · Week of Feb 23</p>
-
-      <div class="schedule-filter">
-        <label for="raFilter">My shifts:</label>
+    <!-- View Toggle + RA Filter Row -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;">
+      <div class="sched-views" style="flex:none;width:auto;">
+        <button class="sched-view-btn active" data-view="bylab">📋 By Lab</button>
+        <button class="sched-view-btn" data-view="my">👤 My Schedule</button>
+      </div>
+      <div class="schedule-filter" style="margin:0;flex:1;min-width:180px;">
+        <label for="raFilter">RA:</label>
         <select id="raFilter">
           <option value="">Everyone</option>
           <option value="Agustin">Agustin</option>
@@ -1445,38 +1665,193 @@ body {
           <option value="Atvika">Atvika</option>
           <option value="Joseph">Joseph</option>
           <option value="Leia">Leia</option>
+          <option value="Lissa">Lissa</option>
           <option value="Saumya">Saumya</option>
         </select>
         <span class="filter-count" id="raFilterCount"></span>
       </div>
-
-      <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;" class="schedule-day">Tuesday, Feb 24</p>
-      <table class="ref-table schedule-table" style="font-size:13px;">
-        <tr><th>#</th><th>Time</th><th>RAs</th></tr>
-        <tr data-ra="Saumya" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Saumya</td></tr>
-        <tr data-ra="Saumya,Joseph"><td>1</td><td>9:00 – 10:00 AM</td><td>Saumya, Joseph</td></tr>
-        <tr data-ra="Saumya,Joseph"><td>2</td><td>10:00 – 11:00 AM</td><td>Saumya, Joseph</td></tr>
-        <tr data-ra="Saumya,Joseph"><td>3</td><td>11:00 – 12:00 PM</td><td>Saumya, Joseph</td></tr>
-        <tr data-ra="Saumya,Joseph"><td>4</td><td>12:00 – 1:00 PM</td><td>Saumya, Joseph</td></tr>
-        <tr data-ra="Joseph" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>1:30 – 2:00 PM</td><td>Joseph</td></tr>
-        <tr data-ra="Joseph,Atvika"><td>5</td><td>2:00 – 3:00 PM</td><td>Joseph, Atvika</td></tr>
-        <tr data-ra="Joseph,Atvika"><td>6</td><td>3:00 – 4:00 PM</td><td>Joseph, Atvika</td></tr>
-        <tr data-ra="Joseph,Atvika"><td>7</td><td>4:00 – 5:00 PM</td><td>Joseph, Atvika</td></tr>
-      </table>
-
-      <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Friday, Feb 27</p>
-      <table class="ref-table schedule-table" style="font-size:13px;">
-        <tr><th>#</th><th>Time</th><th>RAs</th></tr>
-        <tr data-ra="Agustin" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Agustin</td></tr>
-        <tr data-ra="Agustin,Leia"><td>8</td><td>9:00 – 10:00 AM</td><td>Agustin, Leia</td></tr>
-        <tr data-ra="Agustin,Leia"><td>9</td><td>10:00 – 11:00 AM</td><td>Agustin, Leia</td></tr>
-        <tr data-ra="Agustin,Leia"><td>10</td><td>11:00 – 12:00 PM</td><td>Agustin, Leia</td></tr>
-        <tr data-ra="Agustin,Leia"><td>11</td><td>12:00 – 1:00 PM</td><td>Agustin, Leia</td></tr>
-        <tr data-ra="Agustin,Alex"><td>12</td><td>1:00 – 2:00 PM</td><td>Agustin, Alex</td></tr>
-        <tr data-ra="Agustin,Alex"><td>13</td><td>2:00 – 3:00 PM</td><td>Agustin, Alex</td></tr>
-        <tr data-ra="Agustin,Alex"><td>14</td><td>3:00 – 4:00 PM</td><td>Agustin, Alex</td></tr>
-      </table>
     </div>
+
+    <!-- ═══ BY LAB VIEW ═══ -->
+    <div class="sched-bylab active" id="schedByLab">
+      <div class="lab-tabs" id="labTabs">
+        <button class="lab-tab" data-lab="1">Lab 1 <span class="tab-date">Wk of Feb 23</span></button>
+        <button class="lab-tab" data-lab="2">Lab 2 <span class="tab-date">Wk of Mar 2</span></button>
+        <button class="lab-tab" data-lab="3">Lab 3 <span class="tab-date">Wk of Apr 6</span></button>
+        <button class="lab-tab" data-lab="4">Lab 4 <span class="tab-date">Wk of Apr 13</span></button>
+        <button class="lab-tab" data-lab="5">Lab 5 <span class="tab-date">Wk of Apr 27</span></button>
+      </div>
+
+      <div class="sched-empty" id="bylabPrompt" style="padding:24px 20px;">
+        <div class="sched-empty-icon">📋</div>
+        <p>Select a lab above to view its session schedule.</p>
+      </div>
+
+      <!-- Lab 1 -->
+      <div class="lab-tab-panel" id="labPanel1">
+        <p style="font-weight:700;font-size:14px;margin-bottom:8px;">Steve Carney · 14 sessions · 2 days</p>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;" class="schedule-day">Tuesday, Feb 24</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Saumya" data-date="2026-02-24" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Saumya</td></tr>
+          <tr data-ra="Saumya,Joseph" data-date="2026-02-24"><td>1</td><td>9:00 – 10:00 AM</td><td>Saumya, Joseph</td></tr>
+          <tr data-ra="Saumya,Joseph" data-date="2026-02-24"><td>2</td><td>10:00 – 11:00 AM</td><td>Saumya, Joseph</td></tr>
+          <tr data-ra="Saumya,Joseph" data-date="2026-02-24"><td>3</td><td>11:00 – 12:00 PM</td><td>Saumya, Joseph</td></tr>
+          <tr data-ra="Saumya,Joseph" data-date="2026-02-24"><td>4</td><td>12:00 – 1:00 PM</td><td>Saumya, Joseph</td></tr>
+          <tr data-ra="Joseph" data-date="2026-02-24" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>1:30 – 2:00 PM</td><td>Joseph</td></tr>
+          <tr data-ra="Joseph,Atvika" data-date="2026-02-24"><td>5</td><td>2:00 – 3:00 PM</td><td>Joseph, Atvika</td></tr>
+          <tr data-ra="Joseph,Atvika" data-date="2026-02-24"><td>6</td><td>3:00 – 4:00 PM</td><td>Joseph, Atvika</td></tr>
+          <tr data-ra="Joseph,Atvika" data-date="2026-02-24"><td>7</td><td>4:00 – 5:00 PM</td><td>Joseph, Atvika</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Friday, Feb 27</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Agustin" data-date="2026-02-27" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Agustin</td></tr>
+          <tr data-ra="Agustin,Leia" data-date="2026-02-27"><td>8</td><td>9:00 – 10:00 AM</td><td>Agustin, Leia</td></tr>
+          <tr data-ra="Agustin,Leia" data-date="2026-02-27"><td>9</td><td>10:00 – 11:00 AM</td><td>Agustin, Leia</td></tr>
+          <tr data-ra="Agustin,Leia" data-date="2026-02-27"><td>10</td><td>11:00 – 12:00 PM</td><td>Agustin, Leia</td></tr>
+          <tr data-ra="Agustin,Leia" data-date="2026-02-27"><td>11</td><td>12:00 – 1:00 PM</td><td>Agustin, Leia</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-02-27"><td>12</td><td>1:00 – 2:00 PM</td><td>Agustin, Alex</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-02-27"><td>13</td><td>2:00 – 3:00 PM</td><td>Agustin, Alex</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-02-27"><td>14</td><td>3:00 – 4:00 PM</td><td>Agustin, Alex</td></tr>
+        </table>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="lab-tab-panel" id="labPanel2">
+        <p style="font-weight:700;font-size:14px;margin-bottom:8px;">Maansi Dalmia · 14 sessions · 3 days</p>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;" class="schedule-day">Monday, Mar 2</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Joseph" data-date="2026-03-02" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>10:30 – 11:00 AM</td><td>Joseph</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-03-02"><td>1</td><td>11:00 – 12:00 PM</td><td>Joseph, Agustin</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-03-02"><td>2</td><td>12:00 – 1:00 PM</td><td>Joseph, Agustin</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-03-02"><td>3</td><td>1:00 – 2:00 PM</td><td>Joseph, Agustin</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-03-02"><td>4</td><td>2:00 – 3:00 PM</td><td>Joseph, Agustin</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-03-02"><td>5</td><td>3:00 – 4:00 PM</td><td>Joseph, Agustin</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-03-02"><td>6</td><td>4:00 – 5:00 PM</td><td>Joseph, Agustin</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Tuesday, Mar 3</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Saumya" data-date="2026-03-03" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>11:30 – 12:00 PM</td><td>Saumya</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-03-03"><td>7</td><td>12:00 – 1:00 PM</td><td>Saumya, Alex</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Wednesday, Mar 4</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Agustin" data-date="2026-03-04" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>10:30 – 11:00 AM</td><td>Agustin</td></tr>
+          <tr data-ra="Agustin,Joseph" data-date="2026-03-04"><td>8</td><td>11:00 – 12:00 PM</td><td>Agustin, Joseph</td></tr>
+          <tr data-ra="Agustin,Joseph" data-date="2026-03-04"><td>9</td><td>12:00 – 1:00 PM</td><td>Agustin, Joseph</td></tr>
+          <tr data-ra="Agustin,Joseph" data-date="2026-03-04"><td>10</td><td>1:00 – 2:00 PM</td><td>Agustin, Joseph</td></tr>
+          <tr data-ra="Agustin,Joseph" data-date="2026-03-04"><td>11</td><td>2:00 – 3:00 PM</td><td>Agustin, Joseph</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-03-04"><td>12</td><td>3:00 – 4:00 PM</td><td>Agustin, Alex</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-03-04"><td>13</td><td>4:00 – 5:00 PM</td><td>Agustin, Alex</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-03-04"><td>14</td><td>5:00 – 6:00 PM</td><td>Agustin, Alex</td></tr>
+        </table>
+      </div>
+
+      <!-- Lab 3 -->
+      <div class="lab-tab-panel" id="labPanel3">
+        <p style="font-weight:700;font-size:14px;margin-bottom:8px;">Swaroop Poudel · 14 sessions · 3 days</p>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;" class="schedule-day">Monday, Apr 6</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Agustin" data-date="2026-04-06" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>11:30 – 12:00 PM</td><td>Agustin</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-04-06"><td>1</td><td>12:00 – 1:00 PM</td><td>Joseph, Agustin</td></tr>
+          <tr data-ra="Joseph,Agustin" data-date="2026-04-06"><td>2</td><td>1:00 – 2:00 PM</td><td>Joseph, Agustin</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Tuesday, Apr 7</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Saumya" data-date="2026-04-07" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>9:30 – 10:00 AM</td><td>Saumya</td></tr>
+          <tr data-ra="Saumya,Joseph" data-date="2026-04-07"><td>3</td><td>10:00 – 11:00 AM</td><td>Saumya, Joseph</td></tr>
+          <tr data-ra="Saumya,Joseph" data-date="2026-04-07"><td>4</td><td>11:00 – 12:00 PM</td><td>Saumya, Joseph</td></tr>
+          <tr data-ra="Saumya,Joseph" data-date="2026-04-07"><td>5</td><td>12:00 – 1:00 PM</td><td>Saumya, Joseph</td></tr>
+          <tr data-ra="Saumya" data-date="2026-04-07" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>2:30 – 3:00 PM</td><td>Saumya</td></tr>
+          <tr data-ra="Saumya,Atvika" data-date="2026-04-07"><td>6</td><td>3:00 – 4:00 PM</td><td>Saumya, Atvika</td></tr>
+          <tr data-ra="Saumya,Atvika" data-date="2026-04-07"><td>7</td><td>4:00 – 5:00 PM</td><td>Saumya, Atvika</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Wednesday, Apr 8</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Leia" data-date="2026-04-08" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Leia</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-08"><td>8</td><td>9:00 – 10:00 AM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-08"><td>9</td><td>10:00 – 11:00 AM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-08"><td>10</td><td>11:00 – 12:00 PM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-08"><td>11</td><td>12:00 – 1:00 PM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-04-08"><td>12</td><td>1:00 – 2:00 PM</td><td>Agustin, Alex</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-04-08"><td>13</td><td>2:00 – 3:00 PM</td><td>Agustin, Alex</td></tr>
+          <tr data-ra="Agustin,Alex" data-date="2026-04-08"><td>14</td><td>3:00 – 4:00 PM</td><td>Agustin, Alex</td></tr>
+        </table>
+      </div>
+
+      <!-- Lab 4 -->
+      <div class="lab-tab-panel" id="labPanel4">
+        <p style="font-weight:700;font-size:14px;margin-bottom:8px;">Reyna Wang · 14 sessions · 2 days</p>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;" class="schedule-day">Tuesday, Apr 14</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Joseph" data-date="2026-04-14" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Joseph</td></tr>
+          <tr data-ra="Joseph,Saumya" data-date="2026-04-14"><td>1</td><td>9:00 – 10:00 AM</td><td>Joseph, Saumya</td></tr>
+          <tr data-ra="Joseph,Saumya" data-date="2026-04-14"><td>2</td><td>10:00 – 11:00 AM</td><td>Joseph, Saumya</td></tr>
+          <tr data-ra="Joseph,Saumya" data-date="2026-04-14"><td>3</td><td>11:00 – 12:00 PM</td><td>Joseph, Saumya</td></tr>
+          <tr data-ra="Joseph,Saumya" data-date="2026-04-14"><td>4</td><td>12:00 – 1:00 PM</td><td>Joseph, Saumya</td></tr>
+          <tr data-ra="Joseph,Saumya" data-date="2026-04-14"><td>5</td><td>1:00 – 2:00 PM</td><td>Joseph, Saumya</td></tr>
+          <tr data-ra="Joseph,Saumya" data-date="2026-04-14"><td>6</td><td>2:00 – 3:00 PM</td><td>Joseph, Saumya</td></tr>
+          <tr data-ra="Joseph,Saumya" data-date="2026-04-14"><td>7</td><td>3:00 – 4:00 PM</td><td>Joseph, Saumya</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Wednesday, Apr 15</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Leia" data-date="2026-04-15" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>8:30 – 9:00 AM</td><td>Leia</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-15"><td>8</td><td>9:00 – 10:00 AM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-15"><td>9</td><td>10:00 – 11:00 AM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-15"><td>10</td><td>11:00 – 12:00 PM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Leia,Agustin" data-date="2026-04-15"><td>11</td><td>12:00 – 1:00 PM</td><td>Leia, Agustin</td></tr>
+          <tr data-ra="Agustin,Saumya" data-date="2026-04-15"><td>12</td><td>1:00 – 2:00 PM</td><td>Agustin, Saumya</td></tr>
+          <tr data-ra="Agustin,Saumya" data-date="2026-04-15"><td>13</td><td>2:00 – 3:00 PM</td><td>Agustin, Saumya</td></tr>
+          <tr data-ra="Agustin,Saumya" data-date="2026-04-15"><td>14</td><td>3:00 – 4:00 PM</td><td>Agustin, Saumya</td></tr>
+        </table>
+      </div>
+
+      <!-- Lab 5 -->
+      <div class="lab-tab-panel" id="labPanel5">
+        <p style="font-weight:700;font-size:14px;margin-bottom:8px;">Minjeong Ko · 14 sessions · 3 days</p>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin-bottom:6px;" class="schedule-day">Monday, Apr 27</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Saumya" data-date="2026-04-27" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>2:30 – 3:00 PM</td><td>Saumya</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-27"><td>1</td><td>3:00 – 4:00 PM</td><td>Saumya, Alex</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-27"><td>2</td><td>4:00 – 5:00 PM</td><td>Saumya, Alex</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-27"><td>3</td><td>5:00 – 6:00 PM</td><td>Saumya, Alex</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Wednesday, Apr 29</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Alex" data-date="2026-04-29" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>2:30 – 3:00 PM</td><td>Alex</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-29"><td>4</td><td>3:00 – 4:00 PM</td><td>Saumya, Alex</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-29"><td>5</td><td>4:00 – 5:00 PM</td><td>Saumya, Alex</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-29"><td>6</td><td>5:00 – 6:00 PM</td><td>Saumya, Alex</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-29"><td>7</td><td>6:00 – 7:00 PM</td><td>Saumya, Alex</td></tr>
+          <tr data-ra="Saumya,Alex" data-date="2026-04-29"><td>8</td><td>7:00 – 8:00 PM</td><td>Saumya, Alex</td></tr>
+        </table>
+        <p style="font-weight:600;font-size:13px;color:var(--text-secondary);margin:14px 0 6px;" class="schedule-day">Friday, May 1</p>
+        <table class="ref-table schedule-table" style="font-size:13px;">
+          <tr><th>#</th><th>Time</th><th>RAs</th></tr>
+          <tr data-ra="Lissa" data-date="2026-05-01" style="background:var(--surface-alt);font-style:italic;color:var(--text-secondary);"><td>SETUP</td><td>1:30 – 2:00 PM</td><td>Lissa</td></tr>
+          <tr data-ra="Lissa,Joseph" data-date="2026-05-01"><td>9</td><td>2:00 – 3:00 PM</td><td>Lissa, Joseph</td></tr>
+          <tr data-ra="Lissa,Joseph" data-date="2026-05-01"><td>10</td><td>3:00 – 4:00 PM</td><td>Lissa, Joseph</td></tr>
+          <tr data-ra="Lissa,Joseph" data-date="2026-05-01"><td>11</td><td>4:00 – 5:00 PM</td><td>Lissa, Joseph</td></tr>
+          <tr data-ra="Lissa,Agustin" data-date="2026-05-01"><td>12</td><td>5:00 – 6:00 PM</td><td>Lissa, Agustin</td></tr>
+          <tr data-ra="Lissa,Agustin" data-date="2026-05-01"><td>13</td><td>6:00 – 7:00 PM</td><td>Lissa, Agustin</td></tr>
+          <tr data-ra="Lissa,Agustin" data-date="2026-05-01"><td>14</td><td>7:00 – 8:00 PM</td><td>Lissa, Agustin</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ MY SCHEDULE VIEW ═══ -->
+    <div class="sched-my" id="schedMy"></div>
   </div>
 </div>
 
@@ -1715,7 +2090,7 @@ body {
           <li><strong>Log in via Cross Tech School View</strong> at Proctor/RA Desk → click "Okay" → click "Continue" for collective login.</li>
           <li><strong>Log into SimpleTexting</strong> (<a href="https://simpletexting.com" target="_blank" style="color:inherit;font-weight:600;">simpletexting.com</a>) with lab credentials. Keep Inbox tab open.</li>
           <li><strong>Open study folders on each machine:</strong> VPD folder → Temp → [current week's folder]. Hide webcams if unused.</li>
-          <li><strong>Print sign-up sheet</strong> from Google Spreadsheet (lab server laser printer or inkjet if no access). Verify the printed list matches the Google Spreadsheet.</li>
+          <li><strong>Print sign-up sheet</strong> Brian will email to the setup RA (lab server laser printer or inkjet if no access). Verify the printed list matches the Google Spreadsheet.</li>
           <li><strong>Write SONA IDs on Post-its — 2 per person.</strong> One Post-it goes on their phone (placed in wall pocket at check-in), the other goes with them to their station.</li>
           <li><strong>Stage materials for 16 stations.</strong> Hide food/supplies under tables.</li>
         </ul>
@@ -1761,7 +2136,7 @@ body {
       </div>
     </div>
 
-    <!-- Video Display -->
+    <!-- Phone Policy -->
     <div class="card" data-search>
       <div class="card-head">
         <span class="ch-icon">📵</span> Phone Policy
@@ -2507,18 +2882,18 @@ body {
         </table>
 
         <p style="font-weight:600;margin:16px 0 6px;color:var(--ra-text);">Research Assistants</p>
-        <table class="ref-table">
-          <tr><th>Name</th><th>Email</th></tr>
-          <tr><td>Alexander Alonzo</td><td><a href="mailto:afalonzo@marshall.usc.edu">afalonzo@marshall.usc.edu</a></td></tr>
-          <tr><td>Lissa Fredrickson</td><td><a href="mailto:ifredric@marshall.usc.edu">ifredric@marshall.usc.edu</a></td></tr>
-          <tr><td>Atvika Gaur</td><td><a href="mailto:atvikaga@marshall.usc.edu">atvikaga@marshall.usc.edu</a></td></tr>
-          <tr><td>Saumya Ketan Jhaveri</td><td><a href="mailto:saumyake@marshall.usc.edu">saumyake@marshall.usc.edu</a></td></tr>
-          <tr><td>Agustin Montes Tacuba</td><td><a href="mailto:Agustin.Montes-Tacuba.2026@marshall.usc.edu">Agustin.Montes-Tacuba.2026@marshall.usc.edu</a></td></tr>
-          <tr><td>Chanelle Scheffer <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:scheffer@marshall.usc.edu">scheffer@marshall.usc.edu</a></td></tr>
-          <tr><td>Joseph Solomon</td><td><a href="mailto:jas62030@marshall.usc.edu">jas62030@marshall.usc.edu</a></td></tr>
-          <tr><td>Bri Tran <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:bnt@marshall.usc.edu">bnt@marshall.usc.edu</a></td></tr>
-          <tr><td>Derek Wang <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:wangdere@marshall.usc.edu">wangdere@marshall.usc.edu</a></td></tr>
-          <tr><td>Leia Yen</td><td><a href="mailto:lay_094@marshall.usc.edu">lay_094@marshall.usc.edu</a></td></tr>
+        <table class="ref-table" style="font-size:13px;">
+          <tr><th>Name</th><th>Email</th><th>Phone</th></tr>
+          <tr><td>Alexander Alonzo</td><td><a href="mailto:afalonzo@usc.edu">afalonzo@usc.edu</a></td><td><a href="tel:8183149003">818-314-9003</a></td></tr>
+          <tr><td>Lissa Fredrickson</td><td><a href="mailto:ifredric@usc.edu">ifredric@usc.edu</a></td><td><a href="tel:2063278306">206-327-8306</a></td></tr>
+          <tr><td>Atvika Gaur</td><td><a href="mailto:atvikaga@usc.edu">atvikaga@usc.edu</a></td><td><a href="tel:2139945172">213-994-5172</a></td></tr>
+          <tr><td>Saumya Ketan Jhaveri</td><td><a href="mailto:saumyake@usc.edu">saumyake@usc.edu</a></td><td><a href="tel:5108154346">510-815-4346</a></td></tr>
+          <tr><td>Agustin Montes-Tacuba</td><td><a href="mailto:montesta@usc.edu">montesta@usc.edu</a></td><td><a href="tel:9712807752">971-280-7752</a></td></tr>
+          <tr><td>Chanelle Scheffer <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:scheffer@marshall.usc.edu">scheffer@marshall.usc.edu</a></td><td>—</td></tr>
+          <tr><td>Joseph Solomon</td><td><a href="mailto:Joseph.Solomon@usc.edu">Joseph.Solomon@usc.edu</a></td><td><a href="tel:9094199079">909-419-9079</a></td></tr>
+          <tr><td>Bri Tran <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:bnt@usc.edu">bnt@usc.edu</a></td><td><a href="tel:8183004657">818-300-4657</a></td></tr>
+          <tr><td>Derek Wang <span class="badge badge-ra" style="font-size:10px;padding:1px 6px;vertical-align:middle;">STAFF</span></td><td><a href="mailto:wangdere@usc.edu">wangdere@usc.edu</a></td><td><a href="tel:2133351346">213-335-1346</a></td></tr>
+          <tr><td>Leia Yen</td><td><a href="mailto:leia.yen@usc.edu">leia.yen@usc.edu</a></td><td><a href="tel:4242417922">424-241-7922</a></td></tr>
         </table>
       </div>
     </div>
@@ -2636,11 +3011,14 @@ body {
       </div>
       <div class="cl-section-body">
         <ul class="checklist" id="cl2-setup">
+          <li>Review Google Spreadsheet for this session's study order</li>
+          <li>Confirm you have PhD Supervisor's email + phone number</li>
           <li>Power on all 16 computers individually</li>
           <li>Log in via Cross Tech School View at Proctor/RA Desk</li>
           <li>Log into SimpleTexting — keep Inbox tab open</li>
           <li>Open study folders: VPD folder → Temp → [current week's folder]</li>
-          <li>Print sign-up sheet from Google Spreadsheet — verify it matches</li>
+          <li>Hide webcams if study doesn't use them</li>
+          <li>Print sign-up sheet Brian emailed to setup RA — verify it matches Google Spreadsheet</li>
           <li>Write SONA IDs on Post-its — 2 per person (one for phone, one for station)</li>
           <li>Stage materials for 16 stations — hide food/supplies under tables</li>
         </ul>
@@ -2651,6 +3029,35 @@ body {
           <li>Both emergency exits located</li>
           <li>Card access works</li>
           <li>SimpleTexting Inbox open</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cl-section">
+      <div class="cl-section-head">
+        <span class="cl-badge checkin">§3</span>
+        <h3>🚪 Check-In</h3>
+        <span class="cl-when">5 min before hour</span>
+      </div>
+      <div class="cl-section-body">
+        <ul class="checklist" id="cl3-checkin">
+          <li>Go outside 5 min before the hour to greet arrivals</li>
+          <li>Confirm participants are here for MARKETING (not management)</li>
+          <li>Ask participants to find their 5- or 6-digit SONA ID from their reminder email</li>
+          <li>Remind participants to turn phones completely off</li>
+        </ul>
+        <div class="cl-group-label start">✔ At the Hour — For Each Participant</div>
+        <ul class="checklist" id="cl3-each">
+          <li>Ask for SONA ID → check them off the sign-up sheet</li>
+          <li>Collect phone — verify completely off → stick Post-it with ID on phone → wall pocket</li>
+          <li>Give second Post-it with ID for their station</li>
+          <li>Backpacks along back wall (water OK, no other food/drinks)</li>
+          <li>Assign random seat — separate friends</li>
+          <li>Tell them: "Don't touch the computer — everybody starts together"</li>
+        </ul>
+        <div class="cl-group-label hard">⬛ Door Close</div>
+        <ul class="checklist" id="cl3-close">
+          <li>Close door 5 min after the hour (or when done checking) — no one enters after</li>
         </ul>
       </div>
     </div>
@@ -2684,7 +3091,26 @@ body {
           <li>Dismiss participants</li>
           <li>Close all study content, tabs, and surveys on every station</li>
           <li>Collect Post-its from stations and phones</li>
+          <li>Complete all documentation in Google Spreadsheet before leaving</li>
+          <li>Clear cache on stations where participants didn't finish</li>
           <li>Log out of SimpleTexting</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cl-section">
+      <div class="cl-section-head">
+        <span class="cl-badge between">↻</span>
+        <h3>🔄 Between Sessions</h3>
+        <span class="cl-when">back-to-back shifts</span>
+      </div>
+      <div class="cl-section-body">
+        <ul class="checklist" id="cl-between">
+          <li>Restock materials / check supplies for next group</li>
+          <li>Reprint or update sign-up sheet if participant list changed</li>
+          <li>Re-open study folders if closed during cleanup</li>
+          <li>Write new Post-its with SONA IDs for next session's participants</li>
+          <li>Verify all stations are clear (no leftover tabs or data)</li>
         </ul>
       </div>
     </div>
@@ -2825,13 +3251,21 @@ body {
   var pills = document.querySelectorAll('.nav-pill');
   var sectionEls = document.querySelectorAll('.section');
   var scriptCard = document.getElementById('script');
+  var scheduleCard = document.getElementById('schedule');
   var navBar = document.getElementById('navPills');
   var lastActivePill = null;
 
   function updateActivePill() {
     var current = '';
     var scriptActive = false;
+    var scheduleActive = false;
     
+    // Check if schedule card is in view (it's above all sections)
+    if (scheduleCard) {
+      var scr = scheduleCard.getBoundingClientRect();
+      if (scr.top <= 220 && scr.bottom > 180) scheduleActive = true;
+    }
+
     // Check if script card is in view
     if (scriptCard) {
       var sr = scriptCard.getBoundingClientRect();
@@ -2845,10 +3279,12 @@ body {
     for (var j = 0; j < pills.length; j++) {
       var href = pills[j].getAttribute('href');
       var isActive;
-      if (href === '#script') {
-        isActive = scriptActive;
+      if (href === '#schedule') {
+        isActive = scheduleActive && !scriptActive;
+      } else if (href === '#script') {
+        isActive = scriptActive && !scheduleActive;
       } else {
-        isActive = href === '#' + current && !scriptActive;
+        isActive = href === '#' + current && !scriptActive && !scheduleActive;
       }
       if (isActive) {
         pills[j].classList.add('active');
@@ -2918,6 +3354,21 @@ body {
     var anyVisible = false;
     var matchCount = 0;
     var sections = mainContent.querySelectorAll('.section');
+
+    // Handle standalone cards (e.g. #schedule) not inside a .section
+    var standaloneCards = mainContent.querySelectorAll(':scope > .card[data-search]');
+    for (var sc = 0; sc < standaloneCards.length; sc++) {
+      var sCard = standaloneCards[sc];
+      var sText = sCard.textContent.toLowerCase();
+      if (sText.indexOf(query) !== -1) {
+        sCard.style.display = '';
+        sCard.classList.add('open');
+        anyVisible = true;
+        matchCount++;
+      } else {
+        sCard.style.display = 'none';
+      }
+    }
 
     for (var i = 0; i < sections.length; i++) {
       var section = sections[i];
@@ -3000,57 +3451,143 @@ body {
     }
   });
 
-  // ── SCHEDULE HIGHLIGHTING ──
+  // ── SCHEDULE: DUAL VIEW (BY LAB + MY SCHEDULE) ──
   (function() {
-    var dates = [
-      new Date(2026, 1, 23), // Feb 23
-      new Date(2026, 2, 2),  // Mar 2
-      new Date(2026, 3, 6),  // Apr 6
-      new Date(2026, 3, 13), // Apr 13
-      new Date(2026, 3, 27)  // Apr 27
-    ];
-    var table = document.querySelector('#schedule .ref-table');
-    if (!table) return;
-    var rows = table.querySelectorAll('tr');
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    var foundNext = false;
-    for (var i = 1; i < rows.length; i++) {
-      var sessionDate = dates[i - 1];
-      if (sessionDate < today) {
-        rows[i].classList.add('schedule-past');
-      } else if (!foundNext) {
-        rows[i].classList.add('schedule-next');
-        foundNext = true;
-      }
-    }
-  })();
-
-  // ── RA SCHEDULE FILTER ──
-  (function() {
+    var tabs = document.querySelectorAll('.lab-tab');
+    var panels = document.querySelectorAll('.lab-tab-panel');
     var select = document.getElementById('raFilter');
     var countEl = document.getElementById('raFilterCount');
-    if (!select) return;
+    var schedByLab = document.getElementById('schedByLab');
+    var schedMy = document.getElementById('schedMy');
+    var viewBtns = document.querySelectorAll('.sched-view-btn');
+    if (!select || !tabs.length) return;
 
+    // Lab metadata
+    var labMeta = {
+      1: { name: 'Lab 1', phd: 'Steve Carney', color: '#E03131' },
+      2: { name: 'Lab 2', phd: 'Maansi Dalmia', color: '#E8590C' },
+      3: { name: 'Lab 3', phd: 'Swaroop Poudel', color: '#2F9E44' },
+      4: { name: 'Lab 4', phd: 'Reyna Wang', color: '#7048E8' },
+      5: { name: 'Lab 5', phd: 'Minjeong Ko', color: '#0C8599' }
+    };
+
+    // Day name helper
+    var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function fmtDate(d) {
+      return dayNames[d.getDay()] + ', ' + monthNames[d.getMonth()] + ' ' + d.getDate();
+    }
+
+    // ── Collect ALL shifts from DOM into a flat array ──
+    var allShifts = [];
+    for (var lab = 1; lab <= 5; lab++) {
+      var panel = document.getElementById('labPanel' + lab);
+      if (!panel) continue;
+      var rows = panel.querySelectorAll('tr[data-ra]');
+      for (var r = 0; r < rows.length; r++) {
+        var row = rows[r];
+        var tds = row.querySelectorAll('td');
+        var num = tds[0] ? tds[0].textContent.trim() : '';
+        var time = tds[1] ? tds[1].textContent.trim() : '';
+        var raStr = row.getAttribute('data-ra') || '';
+        var dateStr = row.getAttribute('data-date') || '';
+        var isSetup = num === 'SETUP';
+        allShifts.push({
+          lab: lab,
+          num: num,
+          time: time,
+          ras: raStr.split(',').map(function(s){return s.trim();}),
+          raStr: raStr,
+          date: dateStr,
+          dateObj: dateStr ? new Date(dateStr + 'T12:00:00') : null,
+          isSetup: isSetup
+        });
+      }
+    }
+
+    // Sort by date then time
+    allShifts.sort(function(a, b) {
+      if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+      return a.time < b.time ? -1 : a.time > b.time ? 1 : 0;
+    });
+
+    // ── View toggle ──
+    var currentView = 'bylab';
+    for (var v = 0; v < viewBtns.length; v++) {
+      viewBtns[v].addEventListener('click', function() {
+        var view = this.getAttribute('data-view');
+        currentView = view;
+        for (var k = 0; k < viewBtns.length; k++) viewBtns[k].classList.remove('active');
+        this.classList.add('active');
+        if (view === 'bylab') {
+          schedByLab.classList.add('active');
+          schedMy.classList.remove('active');
+          var anyTabActive = document.querySelector('.lab-tab.active');
+          if (!anyTabActive && bylabPrompt) bylabPrompt.style.display = '';
+        } else {
+          schedByLab.classList.remove('active');
+          schedMy.classList.add('active');
+          if (select.value === '') select.value = 'Agustin'; // auto-pick first RA
+        }
+        applyFilter();
+      });
+    }
+
+    // ── Auto-switch: selecting an RA flips to My Schedule ──
     select.addEventListener('change', function() {
-      var name = this.value;
-      var tables = document.querySelectorAll('.schedule-table');
-      var dayLabels = document.querySelectorAll('.schedule-day');
-      var totalShifts = 0;
-      var setupShifts = 0;
+      if (select.value !== '' && currentView === 'bylab') {
+        // Auto-switch to My Schedule
+        currentView = 'my';
+        for (var k = 0; k < viewBtns.length; k++) viewBtns[k].classList.remove('active');
+        document.querySelector('.sched-view-btn[data-view="my"]').classList.add('active');
+        schedByLab.classList.remove('active');
+        schedMy.classList.add('active');
+      }
+      if (select.value === '' && currentView === 'my') {
+        // Switch back to By Lab
+        currentView = 'bylab';
+        for (var k = 0; k < viewBtns.length; k++) viewBtns[k].classList.remove('active');
+        document.querySelector('.sched-view-btn[data-view="bylab"]').classList.add('active');
+        schedByLab.classList.add('active');
+        schedMy.classList.remove('active');
+        // Show prompt if no lab tab is active
+        var anyTabActive = document.querySelector('.lab-tab.active');
+        if (!anyTabActive && bylabPrompt) bylabPrompt.style.display = '';
+      }
+      applyFilter();
+    });
+
+    // ── Tab switching ──
+    var bylabPrompt = document.getElementById('bylabPrompt');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].addEventListener('click', function() {
+        if (this.disabled) return;
+        for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+        for (var j = 0; j < panels.length; j++) panels[j].classList.remove('active');
+        this.classList.add('active');
+        var panel = document.getElementById('labPanel' + this.getAttribute('data-lab'));
+        if (panel) panel.classList.add('active');
+        if (bylabPrompt) bylabPrompt.style.display = 'none';
+        applyByLabFilter();
+      });
+    }
+
+    // ── Apply By Lab filter (existing behavior, cleaned up) ──
+    function applyByLabFilter() {
+      var name = select.value;
+      var activePanel = document.querySelector('.lab-tab-panel.active');
+      if (!activePanel) return;
+      var tables = activePanel.querySelectorAll('.schedule-table');
+      var dayLabels = activePanel.querySelectorAll('.schedule-day');
 
       for (var t = 0; t < tables.length; t++) {
         var rows = tables[t].querySelectorAll('tr[data-ra]');
         var dayVisible = false;
-
         for (var r = 0; r < rows.length; r++) {
           var row = rows[r];
           var ras = row.getAttribute('data-ra').split(',');
           row.classList.remove('schedule-row-hidden', 'schedule-row-highlight');
-
           if (name === '') {
-            // Show all
-            row.classList.remove('schedule-row-hidden');
             dayVisible = true;
           } else {
             var match = false;
@@ -3058,34 +3595,176 @@ body {
               if (ras[a].trim() === name) { match = true; break; }
             }
             if (match) {
-              row.classList.remove('schedule-row-hidden');
               row.classList.add('schedule-row-highlight');
               dayVisible = true;
-              var isSetup = row.querySelector('td') && row.querySelector('td').textContent === 'SETUP';
-              if (isSetup) setupShifts++;
-              else totalShifts++;
             } else {
               row.classList.add('schedule-row-hidden');
             }
           }
         }
-
-        // Show/hide day labels
         if (dayLabels[t]) {
           dayLabels[t].style.display = dayVisible || name === '' ? '' : 'none';
         }
       }
+    }
+
+    // ── Build My Schedule view ──
+    function buildMySchedule() {
+      var name = select.value;
+      if (!name) {
+        schedMy.innerHTML = '<div class="sched-empty"><div class="sched-empty-icon">👤</div><p>Select your name from the dropdown above<br>to see all your shifts across every lab.</p></div>';
+        countEl.textContent = '';
+        return;
+      }
+
+      // Filter shifts for this RA
+      var mine = allShifts.filter(function(s) {
+        return s.ras.indexOf(name) !== -1;
+      });
+
+      if (mine.length === 0) {
+        schedMy.innerHTML = '<div class="sched-empty"><div class="sched-empty-icon">📭</div><p><strong>' + name + '</strong> has no scheduled shifts.</p></div>';
+        countEl.textContent = 'No shifts';
+        return;
+      }
+
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Count stats
+      var sessionCount = 0, setupCount = 0, daySet = {};
+      for (var i = 0; i < mine.length; i++) {
+        if (mine[i].isSetup) setupCount++;
+        else sessionCount++;
+        if (mine[i].date) daySet[mine[i].date] = true;
+      }
+      var dayCount = Object.keys(daySet).length;
+      var labSet = {};
+      for (var i = 0; i < mine.length; i++) labSet[mine[i].lab] = true;
+      var labCount = Object.keys(labSet).length;
+
+      // Build HTML
+      var html = '';
+
+      // Summary bar
+      html += '<div class="sched-summary">';
+      html += '<div class="sched-stat"><strong>' + sessionCount + '</strong>sessions</div>';
+      html += '<div class="sched-stat"><strong>' + setupCount + '</strong>setups</div>';
+      html += '<div class="sched-stat"><strong>' + dayCount + '</strong>days</div>';
+      html += '<div class="sched-stat"><strong>' + labCount + '</strong>labs</div>';
+      html += '</div>';
+
+      // Group by date
+      var grouped = {};
+      var dateOrder = [];
+      for (var i = 0; i < mine.length; i++) {
+        var d = mine[i].date;
+        if (!grouped[d]) { grouped[d] = []; dateOrder.push(d); }
+        grouped[d].push(mine[i]);
+      }
+
+      var foundNext = false;
+      for (var di = 0; di < dateOrder.length; di++) {
+        var dateKey = dateOrder[di];
+        var shifts = grouped[dateKey];
+        var dateObj = shifts[0].dateObj;
+        var isPast = dateObj && dateObj < today;
+        var isNext = !isPast && !foundNext;
+        if (isNext) foundNext = true;
+
+        // Get lab for this date
+        var labNum = shifts[0].lab;
+        var meta = labMeta[labNum];
+
+        html += '<div class="sched-date-header"' + (isPast ? ' style="opacity:0.45;"' : '') + '>';
+        html += fmtDate(dateObj);
+        if (isNext) html += '<span class="sched-next-badge">NEXT</span>';
+        html += '<span class="sched-date-lab" style="background:' + meta.color + ';">' + meta.name + '</span>';
+        html += '</div>';
+
+        for (var si = 0; si < shifts.length; si++) {
+          var s = shifts[si];
+          var partner = s.ras.filter(function(r){return r !== name;}).join(', ');
+
+          html += '<div class="sched-shift' + (s.isSetup ? ' is-setup' : '') + '"' + (isPast ? ' style="opacity:0.45;"' : '') + '>';
+          html += '<span class="sched-shift-time">' + s.time + '</span>';
+          html += '<span class="sched-lab-badge lab-' + s.lab + '">' + (s.isSetup ? 'SETUP' : 'L' + s.lab + ' #' + s.num) + '</span>';
+          if (partner) {
+            html += '<span class="sched-shift-partner">w/ <strong>' + partner + '</strong></span>';
+          } else if (!s.isSetup) {
+            html += '<span class="sched-shift-partner" style="color:var(--text-muted);font-style:italic;">solo</span>';
+          }
+          html += '</div>';
+        }
+      }
+
+      schedMy.innerHTML = html;
 
       // Update count
-      if (name === '') {
-        countEl.textContent = '';
+      var parts = [];
+      if (sessionCount > 0) parts.push(sessionCount + ' session' + (sessionCount === 1 ? '' : 's'));
+      if (setupCount > 0) parts.push(setupCount + ' setup' + (setupCount === 1 ? '' : 's'));
+      parts.push(dayCount + ' day' + (dayCount === 1 ? '' : 's'));
+      countEl.textContent = parts.join(' · ');
+    }
+
+    // ── Master filter ──
+    function applyFilter() {
+      if (currentView === 'bylab') {
+        applyByLabFilter();
+        // Update count for by-lab view
+        var name = select.value;
+        if (!name) { countEl.textContent = ''; return; }
+        var activePanel = document.querySelector('.lab-tab-panel.active');
+        if (!activePanel) return;
+        var rows = activePanel.querySelectorAll('tr[data-ra]');
+        var ts = 0, ss = 0;
+        for (var r = 0; r < rows.length; r++) {
+          var ras = rows[r].getAttribute('data-ra').split(',');
+          var match = false;
+          for (var a = 0; a < ras.length; a++) { if (ras[a].trim() === name) { match = true; break; } }
+          if (match) {
+            if (rows[r].querySelector('td') && rows[r].querySelector('td').textContent === 'SETUP') ss++;
+            else ts++;
+          }
+        }
+        var p = [];
+        if (ts > 0) p.push(ts + ' session' + (ts===1?'':'s'));
+        if (ss > 0) p.push(ss + ' setup');
+        countEl.textContent = p.length > 0 ? p.join(' + ') : 'No shifts this lab';
       } else {
-        var parts = [];
-        if (totalShifts > 0) parts.push(totalShifts + ' session' + (totalShifts === 1 ? '' : 's'));
-        if (setupShifts > 0) parts.push(setupShifts + ' setup');
-        countEl.textContent = parts.length > 0 ? parts.join(' + ') : 'No shifts assigned';
+        buildMySchedule();
       }
-    });
+    }
+
+    applyFilter();
+
+    // ── Summary table highlighting (past/next lab) ──
+    (function() {
+      var dates = [
+        new Date(2026, 1, 23),
+        new Date(2026, 2, 2),
+        new Date(2026, 3, 6),
+        new Date(2026, 3, 13),
+        new Date(2026, 3, 27)
+      ];
+      var table = document.querySelector('#schedule > .card-body > .ref-table');
+      if (!table) return;
+      var rows = table.querySelectorAll('tr');
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+      var foundNext = false;
+      for (var i = 1; i < rows.length; i++) {
+        var sessionDate = dates[i - 1];
+        if (sessionDate < today) {
+          rows[i].classList.add('schedule-past');
+        } else if (!foundNext) {
+          rows[i].classList.add('schedule-next');
+          foundNext = true;
+        }
+      }
+    })();
+
   })();
 
   // ── CHECKLISTS PANEL ──

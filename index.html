@@ -1024,15 +1024,6 @@ body {
   flex-shrink: 0;
 }
 
-@media (max-width: 420px) {
-  .lab-layout { padding: 14px; }
-  .lab-aisle { width: 32px; }
-  .lab-num { font-size: 12px; }
-  .lab-cubicle { padding: 8px 4px; }
-}
-
-
-
 /* ── EMERGENCY PANEL ── */
 .emergency-panel {
   position: fixed;
@@ -1186,6 +1177,11 @@ body {
   .section-title h2 { font-size: 15px; }
   .section-body { margin-left: 10px; padding-left: 10px; }
   html { scroll-padding-top: 120px; }
+  .lab-layout { padding: 14px; }
+  .lab-aisle { width: 32px; }
+  .lab-num { font-size: 12px; }
+  .lab-cubicle { padding: 8px 4px; }
+  .sched-shift-time { min-width: 95px; font-size: 11px; }
 }
 
 @media (min-width: 600px) {
@@ -1394,9 +1390,6 @@ body {
   min-width: 120px;
   flex-shrink: 0;
 }
-@media (max-width: 420px) {
-  .sched-shift-time { min-width: 95px; font-size: 11px; }
-}
 
 .sched-lab-badge {
   font-size: 10px;
@@ -1570,7 +1563,7 @@ body {
 <div class="pw-gate" id="pwGate">
   <div class="pw-box">
     <h1>In-Person Research Session Management</h1>
-    <p class="pw-sub">Marshall Behavioral Research Lab · BUAD 307 · Spring 2026</p>
+    <p class="pw-sub">Marketing (MKT) Subject Pool · Department of Marketing · USC Marshall School of Business</p>
     <div style="width:40px;height:2px;background:var(--cardinal);margin:16px auto 20px;border-radius:1px;"></div>
     <input type="password" id="pwInput" placeholder="Enter password" autocomplete="off">
     <button id="pwSubmit">Unlock</button>
@@ -1600,6 +1593,7 @@ body {
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input type="text" class="search-input" id="searchInput" placeholder="Search procedures, contacts, policies…" autocomplete="off">
       <button class="search-clear" id="searchClear">✕</button>
+      <span class="search-kbd">/</span>
     </div>
     <div class="search-count" id="searchCount"></div>
   </div>
@@ -2996,7 +2990,7 @@ body {
   </div>
   <div class="cl-panel-content">
     <div class="cl-intro">
-      <p>Tap items to check them off · Resets on page reload</p>
+      <p>Tap items to check them off · Progress saved for this session</p>
     </div>
     <div class="cl-progress">
       <div class="cl-progress-track"><div class="cl-progress-fill" id="clProgressFill"></div></div>
@@ -3355,6 +3349,9 @@ body {
     var matchCount = 0;
     var sections = mainContent.querySelectorAll('.section');
 
+    // Clear previous highlights
+    clearHighlights();
+
     // Handle standalone cards (e.g. #schedule) not inside a .section
     var standaloneCards = mainContent.querySelectorAll(':scope > .card[data-search]');
     for (var sc = 0; sc < standaloneCards.length; sc++) {
@@ -3363,6 +3360,7 @@ body {
       if (sText.indexOf(query) !== -1) {
         sCard.style.display = '';
         sCard.classList.add('open');
+        highlightInElement(sCard.querySelector('.card-body'), query);
         anyVisible = true;
         matchCount++;
       } else {
@@ -3381,6 +3379,7 @@ body {
         if (text.indexOf(query) !== -1) {
           card.style.display = '';
           card.classList.add('open');
+          highlightInElement(card.querySelector('.card-body'), query);
           sectionHasMatch = true;
           matchCount++;
         } else {
@@ -3412,7 +3411,54 @@ body {
     }
   });
 
+  // Highlight matched text within an element's text nodes
+  function highlightInElement(el, query) {
+    if (!el) return;
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    var nodesToProcess = [];
+    while (walker.nextNode()) {
+      if (walker.currentNode.nodeValue.toLowerCase().indexOf(query) !== -1) {
+        nodesToProcess.push(walker.currentNode);
+      }
+    }
+    for (var i = 0; i < nodesToProcess.length; i++) {
+      var textNode = nodesToProcess[i];
+      var parent = textNode.parentNode;
+      if (parent.classList && parent.classList.contains('highlight')) continue;
+      var tag = parent.tagName;
+      if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'INPUT' || tag === 'SELECT') continue;
+      var text = textNode.nodeValue;
+      var lower = text.toLowerCase();
+      var idx = lower.indexOf(query);
+      if (idx === -1) continue;
+      var frag = document.createDocumentFragment();
+      var lastIdx = 0;
+      while (idx !== -1) {
+        if (idx > lastIdx) frag.appendChild(document.createTextNode(text.substring(lastIdx, idx)));
+        var span = document.createElement('span');
+        span.className = 'highlight';
+        span.textContent = text.substring(idx, idx + query.length);
+        frag.appendChild(span);
+        lastIdx = idx + query.length;
+        idx = lower.indexOf(query, lastIdx);
+      }
+      if (lastIdx < text.length) frag.appendChild(document.createTextNode(text.substring(lastIdx)));
+      parent.replaceChild(frag, textNode);
+    }
+  }
+
+  function clearHighlights() {
+    var highlights = mainContent.querySelectorAll('.highlight');
+    for (var i = 0; i < highlights.length; i++) {
+      var span = highlights[i];
+      var parent = span.parentNode;
+      parent.replaceChild(document.createTextNode(span.textContent), span);
+      parent.normalize();
+    }
+  }
+
   function resetSearch() {
+    clearHighlights();
     var sections = mainContent.querySelectorAll('.section');
     for (var i = 0; i < sections.length; i++) sections[i].style.display = '';
     var cards = mainContent.querySelectorAll('.card');
@@ -3648,10 +3694,10 @@ body {
 
       // Summary bar
       html += '<div class="sched-summary">';
-      html += '<div class="sched-stat"><strong>' + sessionCount + '</strong>sessions</div>';
-      html += '<div class="sched-stat"><strong>' + setupCount + '</strong>setups</div>';
-      html += '<div class="sched-stat"><strong>' + dayCount + '</strong>days</div>';
-      html += '<div class="sched-stat"><strong>' + labCount + '</strong>labs</div>';
+      html += '<div class="sched-stat"><strong>' + sessionCount + '</strong> sessions</div>';
+      html += '<div class="sched-stat"><strong>' + setupCount + '</strong> setups</div>';
+      html += '<div class="sched-stat"><strong>' + dayCount + '</strong> days</div>';
+      html += '<div class="sched-stat"><strong>' + labCount + '</strong> labs</div>';
       html += '</div>';
 
       // Group by date
@@ -3775,13 +3821,38 @@ body {
   var clProgressText = document.getElementById('clProgressText');
   var clReset = document.getElementById('clReset');
 
+  var CL_STORAGE_KEY = 'buad307_checklist';
+
+  function restoreChecklistState() {
+    try {
+      var saved = sessionStorage.getItem(CL_STORAGE_KEY);
+      if (!saved) return;
+      var checked = JSON.parse(saved);
+      var items = clPanel.querySelectorAll('.checklist li');
+      for (var i = 0; i < items.length; i++) {
+        if (checked.indexOf(i) !== -1) items[i].classList.add('checked');
+      }
+    } catch(e) {}
+  }
+
+  function saveChecklistState() {
+    try {
+      var items = clPanel.querySelectorAll('.checklist li');
+      var checked = [];
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].classList.contains('checked')) checked.push(i);
+      }
+      sessionStorage.setItem(CL_STORAGE_KEY, JSON.stringify(checked));
+    } catch(e) {}
+  }
+
   function updateClProgress() {
     var total = clPanel.querySelectorAll('.checklist li').length;
     var checked = clPanel.querySelectorAll('.checklist li.checked').length;
     var pct = Math.round((checked / total) * 100);
     clProgressFill.style.width = pct + '%';
     if (checked === total) {
-      clProgressText.textContent = '✓ All done!';
+      clProgressText.textContent = '\u2713 All done!';
       clProgressFill.style.background = 'linear-gradient(90deg, #1B6B3A, #2F9E44)';
     } else {
       clProgressText.textContent = checked + ' / ' + total;
@@ -3804,6 +3875,7 @@ body {
     if (li && clPanel.contains(li)) {
       li.classList.toggle('checked');
       updateClProgress();
+      saveChecklistState();
     }
   });
 
@@ -3813,6 +3885,7 @@ body {
       items[i].classList.remove('checked');
     }
     updateClProgress();
+    saveChecklistState();
   });
 
   // Escape closes panel
@@ -3823,7 +3896,65 @@ body {
     }
   });
 
+  restoreChecklistState();
   updateClProgress();
+
+
+  // ── ACCESSIBILITY ──
+  (function() {
+    var headers = document.querySelectorAll('.section-header');
+    for (var i = 0; i < headers.length; i++) {
+      headers[i].setAttribute('role', 'button');
+      headers[i].setAttribute('tabindex', '0');
+      headers[i].setAttribute('aria-expanded', 'false');
+    }
+    var cardHeads = document.querySelectorAll('.card:not(.always-open) .card-head');
+    for (var i = 0; i < cardHeads.length; i++) {
+      cardHeads[i].setAttribute('role', 'button');
+      cardHeads[i].setAttribute('tabindex', '0');
+      cardHeads[i].setAttribute('aria-expanded', 'false');
+    }
+    var tabList = document.getElementById('labTabs');
+    if (tabList) tabList.setAttribute('role', 'tablist');
+    var labTabs = document.querySelectorAll('.lab-tab');
+    for (var i = 0; i < labTabs.length; i++) {
+      labTabs[i].setAttribute('role', 'tab');
+      labTabs[i].setAttribute('aria-selected', labTabs[i].classList.contains('active') ? 'true' : 'false');
+    }
+    var labPanels = document.querySelectorAll('.lab-tab-panel');
+    for (var i = 0; i < labPanels.length; i++) labPanels[i].setAttribute('role', 'tabpanel');
+    var clItems = document.querySelectorAll('.checklist li');
+    for (var i = 0; i < clItems.length; i++) {
+      clItems[i].setAttribute('role', 'checkbox');
+      clItems[i].setAttribute('tabindex', '0');
+      clItems[i].setAttribute('aria-checked', 'false');
+    }
+  })();
+
+  // Keep ARIA state in sync
+  document.addEventListener('click', function() {
+    setTimeout(function() {
+      var h = document.querySelectorAll('.section-header[role="button"]');
+      for (var i = 0; i < h.length; i++) h[i].setAttribute('aria-expanded', h[i].closest('.section').classList.contains('open') ? 'true' : 'false');
+      var c = document.querySelectorAll('.card-head[role="button"]');
+      for (var i = 0; i < c.length; i++) c[i].setAttribute('aria-expanded', c[i].closest('.card').classList.contains('open') ? 'true' : 'false');
+      var t = document.querySelectorAll('.lab-tab[role="tab"]');
+      for (var i = 0; i < t.length; i++) t[i].setAttribute('aria-selected', t[i].classList.contains('active') ? 'true' : 'false');
+      var cl = document.querySelectorAll('.checklist li[role="checkbox"]');
+      for (var i = 0; i < cl.length; i++) cl[i].setAttribute('aria-checked', cl[i].classList.contains('checked') ? 'true' : 'false');
+    }, 60);
+  });
+
+  // Enter/Space activates focused interactive elements
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      var el = document.activeElement;
+      if (el && (el.getAttribute('role') === 'button' || el.getAttribute('role') === 'checkbox' || el.getAttribute('role') === 'tab' || el.classList.contains('btn-expand-all'))) {
+        e.preventDefault();
+        el.click();
+      }
+    }
+  });
 
   // ── DEEP LINK SUPPORT ──
   function handleHash() {
